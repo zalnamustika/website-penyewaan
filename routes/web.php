@@ -42,6 +42,29 @@ Route::post('/reset',[ForgetPasswordController::class,'resetPassword'])->name('r
 
 Route::middleware(['auth','superuser'])->group(function () {
     Route::get('/admin/admin-management',[AdminController::class, 'adminmanagement'])->name('superuser.admin');
+});
+
+Route::middleware(['auth','admin'])->group(function () {
+    Route::get('/admin', [AdminController::class,'index'])->name('admin.index');
+
+    //Penyewaan
+    Route::get('/admin/penyewaan',[RentController::class, 'index'])->name('penyewaan.index');
+    Route::get('/admin/penyewaan/detail/{id}',[RentController::class, 'detail'])->name('penyewaan.detail');
+    Route::get('/admin/riwayat-reservasi',[RentController::class,'riwayat'])->name('riwayat-reservasi');
+    Route::patch('/acc/{paymentId}',[OrderController::class,'acc'])->name('acc');
+    Route::patch('/admin/selesai/{id}',[OrderController::class,'produkkembali'])->name('selesai');
+    Route::get('/admin/laporan/cetak',[OrderController::class,'cetak'])->name('cetak');
+    Route::delete('/admin/cancel/{id}',[RentController::class,'destroy'])->name('admin.penyewaan.cancel');
+    Route::patch('/accbayar/{id}',[OrderController::class,'accbayar'])->name('accbayar');
+
+    Route::get('/admin/buat-reservasi/{userId}',[AdminController::class,'newOrderIndex'])->name('admin.buatreservasi');
+    Route::post('/admin/buat-reservasi/order/{userId}',[AdminController::class,'createNewOrder'])->name('admin.createorder');
+
+    // Penyewa atau User
+    Route::get('/admin/usermanagement',[AdminController::class,'usermanagement'])->name('admin.user');
+    Route::post('/admin/usermanagement/new',[AdminController::class,'newUser'])->name('user.new');
+    Route::patch('admin/user/promote/{id}',[UserController::class,'promote'])->name('user.promote');
+    Route::patch('admin/user/demote/{id}',[UserController::class,'demote'])->name('user.demote');
 
     // Alat
     Route::get('/admin/product/{id?}',[ProductController::class, 'index'])->name('product.index');
@@ -56,29 +79,6 @@ Route::middleware(['auth','superuser'])->group(function () {
     Route::get('/admin/kategori/{id}/edit',[CategoryController::class,'edit'])->name('kategori.edit');
     Route::patch('/admin/kategori/{id}',[CategoryController::class,'update'])->name('kategori.update');
     Route::delete('/admin/kategori/{id}',[CategoryController::class,'destroy'])->name('kategori.destroy');
-});
-
-Route::middleware(['auth','admin'])->group(function () {
-    Route::get('/admin', [AdminController::class,'index'])->name('admin.index');
-
-    //Penyewaan
-    Route::get('/admin/penyewaan',[RentController::class, 'index'])->name('penyewaan.index');
-    Route::get('/admin/penyewaan/detail/{id}',[RentController::class, 'detail'])->name('penyewaan.detail');
-    Route::get('/admin/riwayat-reservasi',[RentController::class,'riwayat'])->name('riwayat-reservasi');
-    Route::patch('/acc/{paymentId}',[OrderController::class,'acc'])->name('acc');
-    Route::patch('/admin/selesai/{id}',[OrderController::class,'alatkembali'])->name('selesai');
-    Route::get('/admin/laporan/cetak',[OrderController::class,'cetak'])->name('cetak');
-    Route::delete('/admin/cancel/{id}',[RentController::class,'destroy'])->name('admin.penyewaan.cancel');
-    Route::patch('/accbayar/{id}',[OrderController::class,'accbayar'])->name('accbayar');
-
-    Route::get('/admin/buat-reservasi/{userId}',[AdminController::class,'newOrderIndex'])->name('admin.buatreservasi');
-    Route::post('/admin/buat-reservasi/order/{userId}',[AdminController::class,'createNewOrder'])->name('admin.createorder');
-
-    // Penyewa atau User
-    Route::get('/admin/usermanagement',[AdminController::class,'usermanagement'])->name('admin.user');
-    Route::post('/admin/usermanagement/new',[AdminController::class,'newUser'])->name('user.new');
-    Route::patch('admin/user/promote/{id}',[UserController::class,'promote'])->name('user.promote');
-    Route::patch('admin/user/demote/{id}',[UserController::class,'demote'])->name('user.demote');
 });
 
 Route::middleware('auth')->group(function() {

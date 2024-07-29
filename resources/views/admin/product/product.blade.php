@@ -48,12 +48,12 @@
                                     <img class="card-img-top" src="{{ url('') }}/images/{{ $product->gambar }}" alt="">
                                     <div class="card-body">
                                         <span class="badge bg-warning">{{ $product->category->nama_kategori }}</span>
-                                        <h6 class="card-title">{{ $product->nama_product }}</h6>
+                                        <h6 class="card-title">{{ $product->nama_produk }}</h6>
                                     </div>
                                     <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">@money($product->harga1h)<span class="badge bg-light text-dark" style="float: right;">1 Hari</span></li>
-                                        <li class="list-group-item">@money($product->harga3h)<span class="badge bg-light text-dark" style="float: right;">3 Hari</span></li>
-                                        <li class="list-group-item">@money($product->harga7h)<span class="badge bg-light text-dark" style="float: right;">7 Hari</span></li>
+                                        <li class="list-group-item">{{ formatRupiah($product->harga1h) }}<span class="badge bg-light text-dark" style="float: right;">1 Hari</span></li>
+                                        <li class="list-group-item">{{ formatRupiah($product->harga3h) }}<span class="badge bg-light text-dark" style="float: right;">3 Hari</span></li>
+                                        <li class="list-group-item">{{ formatRupiah($product->harga7h) }}<span class="badge bg-light text-dark" style="float: right;">7 Hari</span></li>
                                     </ul>
                                     <div class="card-footer">
                                         <div class="btn-group" role="group">
