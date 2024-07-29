@@ -70,7 +70,7 @@
                     @if ($detail->first()->payment->bukti == NULL)
                         Reservasi anda telah disetujui, silakan bayar sesuai dengan total yang tertera dengan cara transfer ke
                         <h4><b>BNI xxxxxxxxxx</b></h5>
-                        <h6><b>a.n Dendra Kurnianto</b></h6>
+                        <h6><b>a.n Erawati</b></h6>
                         lalu upload bukti bayar dengan menekan tombol dibawah.
                     @else
                         Bukti pembayaran telah di upload, silakan tunggu konfirmasi dari Admin

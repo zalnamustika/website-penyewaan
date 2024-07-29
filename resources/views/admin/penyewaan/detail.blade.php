@@ -67,7 +67,7 @@
                                     <div class="d-flex justify-content-between"></div>
                                     <a class="link-dark" href="{{ route('home.detail',['id' => $item->product->id]) }}" class="link" style="text-decoration: none;">{{ $item->product->nama_produk }}</a>
                                     <span class="badge bg-warning">{{ $item->product->category->nama_kategori }}</span>
-                                    <span class="badge bg-secondary">{{ $item->durasi }} Hari</span>
+                                    <span class="badge bg-secondary">{{ $item->durasi }} Jam</span>
                                     @if ($item->status === 3)
                                         <span class="badge bg-danger">Ditolak</span>
                                     @elseif ($item->status === 2)
@@ -75,7 +75,7 @@
                                     @endif
                                 </td>
                                 <td>{{ date('d M Y H:i', strtotime($item->ends)) }}</td>
-                                <td style="text-align: right"><b> {{ $item->harga }}</b></td>
+                                <td style="text-align: right"><b> {{ formatRupiah($item->harga) }}</b></td>
                             </tr>
                             @endforeach
                             <tr>

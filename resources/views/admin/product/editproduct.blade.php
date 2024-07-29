@@ -6,7 +6,7 @@
             <div class="col">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <a class="link-dark" href="{{ route('product.index') }}"><i class="fas fa-arrow-left"></i> Kembali</a> | Detail untuk Produk "{{ $product->nama_produk }}"
+                        <a class="link-dark" href="{{ route('product.index') }}" style="text-decoration: none"><i class="fas fa-arrow-left"></i> Kembali</a> | Detail untuk Produk "{{ $product->nama_produk }}"
                     </div>
                     <div class="card-body">
                         <form action="{{ route('product.update',['id' => $product->id]) }}" method="POST" enctype="multipart/form-data">
@@ -39,7 +39,7 @@
                                     </div>
                                     <div class="input-group">
                                         <span class="input-group-text">Rp</span>
-                                        <input type="number" value="{{ $product->harga7h }}" name="harga6" class="form-control" placeholder="Harga 7hari" required>
+                                        <input type="number" value="{{ $product->harga7h }}" name="harga7h" class="form-control" placeholder="Harga 7hari" required>
                                         <span class="input-group-text"><b>/7hari</b></span>
                                     </div>
                                 </div>

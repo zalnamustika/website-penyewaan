@@ -68,10 +68,10 @@ Route::middleware(['auth','admin'])->group(function () {
 
     // Alat
     Route::get('/admin/product/{id?}',[ProductController::class, 'index'])->name('product.index');
-    Route::get('/admin/alat/{id}/detail',[ProductController::class,'edit'])->name('product.edit');
-    Route::patch('/admin/alat/{id}/detail',[ProductController::class,'update'])->name('product.update');
-    Route::delete('/admin/alat/{id}/detail',[ProductController::class,'destroy'])->name('product.destroy');
-    Route::post('/admin/alat',[ProductController::class, 'store'])->name('product.store');
+    Route::get('/admin/product/{id}/detail',[ProductController::class,'edit'])->name('product.edit');
+    Route::patch('/admin/product/{id}/detail',[ProductController::class,'update'])->name('product.update');
+    Route::delete('/admin/product/{id}/detail',[ProductController::class,'destroy'])->name('product.destroy');
+    Route::post('/admin/product',[ProductController::class, 'store'])->name('product.store');
 
     // Kategori
     Route::get('/admin/kategori',[CategoryController::class,'index'])->name('kategori.index');

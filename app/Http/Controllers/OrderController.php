@@ -15,7 +15,8 @@ use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
-    public function show() {
+    public function show()
+    {
         $reservasi = Payment::with('order')->where('user_id', Auth::id())
             ->where('status', '!=', 4)
             ->orderBy('id', 'DESC')
@@ -24,16 +25,17 @@ class OrderController extends Controller
             ->where('status', 4)
             ->orderBy('id', 'DESC')
             ->get();
-    
+
         return view('member.reservasi', compact('reservasi', 'riwayat'));
     }
 
-    public function detail($id) {
+    public function detail($id)
+    {
         $detail = Order::where('payment_id', $id)->get();
         $payment = Payment::find($id);
 
-        if($payment->user_id == Auth::id()) {
-            return view('member.detailreservasi',[
+        if ($payment->user_id == Auth::id()) {
+            return view('member.detailreservasi', [
                 'detail' => $detail,
                 'total' => $payment->total,
                 'paymentId' => $payment->id,
@@ -45,23 +47,26 @@ class OrderController extends Controller
         }
     }
 
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
         $cart = Carts::where('user_id', Auth::id())->get();
         $pembayaran = new Payment();
 
-        $pembayaran->no_invoice = Auth::id()."/".Carbon::now()->timestamp;
+        $pembayaran->no_invoice = Auth::id() . "/" . Carbon::now()->timestamp;
         $pembayaran->user_id = Auth::id();
         $pembayaran->total = $cart->sum('harga');
         $pembayaran->save();
 
-        foreach($cart as $c) {
+        foreach ($cart as $c) {
+            $startDateTime = Carbon::createFromFormat('Y-m-d H:i', $request['start_date'] . ' ' . $request['start_time'], 'Asia/Jakarta');
+            $endDateTime = $startDateTime->copy()->addDays($c->durasi);
             Order::create([
                 'product_id' => $c->product_id,
                 'user_id' => $c->user_id,
-                'payment_id' => Payment::where('user_id',Auth::id())->orderBy('id','desc')->first()->id,
+                'payment_id' => Payment::where('user_id', Auth::id())->orderBy('id', 'desc')->first()->id,
                 'durasi' => $c->durasi,
-                'starts' => date('Y-m-d H:i', strtotime($request['start_date'].$request['start_time'])),
-                'ends' => date('Y-m-d H:i', strtotime($request['start_date'].$request['start_time']."+".$c->durasi." hours")),
+                'starts' => $startDateTime->format('Y-m-d H:i', strtotime($request['start_date'] . $request['start_time'])),
+                'ends' => $endDateTime->format('Y-m-d H:i', strtotime($request['start_date'] . ' ' . $request['start_time'] . " +" . $c->durasi . " days")),
                 'harga' => $c->harga,
             ]);
             $c->delete();
@@ -70,7 +75,8 @@ class OrderController extends Controller
         return redirect(route('order.show'));
     }
 
-    public function destroy($id) {
+    public function destroy($id)
+    {
         $payment = Payment::find($id);
 
         $payment->delete();
@@ -78,11 +84,12 @@ class OrderController extends Controller
         return redirect(route('order.show'));
     }
 
-    public function acc(Request $request, $paymentId) {
+    public function acc(Request $request, $paymentId)
+    {
         $orders = $request->order;
         $payment = new Payment();
 
-        foreach($orders as $o) {
+        foreach ($orders as $o) {
             Order::where('id', $o)->update(['status' => 2]);
         }
         $payment->find($paymentId)->update(['status' => 2]);
@@ -93,15 +100,16 @@ class OrderController extends Controller
         return back();
     }
 
-    public function bayar(Request $request, $id) {
+    public function bayar(Request $request, $id)
+    {
         $this->validate($request, [
             'bukti' => "image|mimes:png,jpg,svg,jpeg,gif|max:5000"
         ]);
 
         $payment = Payment::find($id);
-        if($request->hasFile('bukti')) {
+        if ($request->hasFile('bukti')) {
             $gambar = $request->file('bukti');
-            $filename = time().'-'.$gambar->getClientOriginalName();
+            $filename = time() . '-' . $gambar->getClientOriginalName();
             $gambar->move(public_path('images/evidence'), $filename);
         }
         $payment->update([
@@ -111,7 +119,8 @@ class OrderController extends Controller
         return back();
     }
 
-    public function accbayar($id) {
+    public function accbayar($id)
+    {
         $payment = Payment::find($id);
 
         $payment->update([
@@ -122,7 +131,8 @@ class OrderController extends Controller
         return back();
     }
 
-    public function produkkembali($id) {
+    public function produkkembali($id)
+    {
         Payment::find($id)->update([
             'status' => 4
         ]);
@@ -130,19 +140,20 @@ class OrderController extends Controller
         return back();
     }
 
-    public function cetak() {
+    public function cetak()
+    {
         $dari = request('dari');
         $sampai = request('sampai');
         $laporan = DB::table('orders')
-            ->join('payments','payments.id','orders.payment_id')
-            ->join('products','products.id','orders.product_id')
-            ->join('users','users.id','orders.user_id')
-            ->whereBetween('orders.created_at',[$dari, $sampai])
-            ->where('orders.status',2)
-            ->where('payments.status','>',2)
-            ->get(['*','orders.created_at AS tanggal']);
+            ->join('payments', 'payments.id', 'orders.payment_id')
+            ->join('products', 'products.id', 'orders.product_id')
+            ->join('users', 'users.id', 'orders.user_id')
+            ->whereBetween('orders.created_at', [$dari, $sampai])
+            ->where('orders.status', 2)
+            ->where('payments.status', '>', 2)
+            ->get(['*', 'orders.created_at AS tanggal']);
 
-        return view('admin.laporan',[
+        return view('admin.laporan', [
             'laporan' => $laporan,
             'total' => $laporan->sum('harga')
         ]);

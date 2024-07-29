@@ -15,11 +15,11 @@ class CartController extends Controller
         $product = Product::find($id);
 
 
-        if ($request['btn'] == '1') {
+        if ($request['btn'] == '24') {
             $harga = $product->harga1h;
-        } elseif ($request['btn'] == '3') {
+        } elseif ($request['btn'] == '72') {
             $harga = $product->harga3h;
-        } elseif ($request['btn'] == '7') {
+        } elseif ($request['btn'] == '168') {
             $harga = $product->harga7h;
         }
 
