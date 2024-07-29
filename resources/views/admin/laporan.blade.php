@@ -27,12 +27,12 @@
                         <td>{{ date('D, d M Y', strtotime($item->tanggal)) }}</td>
                         <td>{{ $item->nama_produk }}</td>
                         <td>{{ $item->name }}</td>
-                        <td style="text-align: right"><b>@money($item->harga)</b></td>
+                        <td style="text-align: right"><b>{{ formatRupiah($item->harga) }}</b></td>
                     </tr>
                     @endforeach
                     <tr>
                         <td colspan="4"></td>
-                        <td style="text-align: right"><b>{{ formatRupiah($total) }}@money($total)</b></td>
+                        <td style="text-align: right"><b>{{ formatRupiah($total) }}</b></td>
                     </tr>
                 </tbody>
             </table>

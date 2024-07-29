@@ -22,7 +22,7 @@
                                     <td> {{ $item->no_invoice }} <span class="badge bg-secondary">Selesai</span></td>
                                     <td>{{ date('D, d M Y H:i', strtotime($item->created_at)) }}</td>
                                     <td><b>{{ $item->user->name }}</b> ({{ $item->user->email }})</td>
-                                    <td>@money($item->total) &nbsp; <span class="badge bg-secondary">{{ $item->order->count() }} Produk</span></td>
+                                    <td>{{ formatRupiah($item->total) }} &nbsp; <span class="badge bg-secondary">{{ $item->order->count() }} Produk</span></td>
                                     <td>
                                         <a href="{{ route('penyewaan.detail',['id' => $item->id]) }}" class="btn btn-outline-primary position-relative">
                                             Detail

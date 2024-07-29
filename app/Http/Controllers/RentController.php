@@ -14,7 +14,7 @@ class RentController extends Controller
     }
 
     public function detail($id) {
-        $detail = Order::with(['user','payment','alat'])->where('payment_id', $id)->get();
+        $detail = Order::with(['user','payment','product'])->where('payment_id', $id)->get();
         $payment = Payment::find($id);
 
         return view('admin.penyewaan.detail',[

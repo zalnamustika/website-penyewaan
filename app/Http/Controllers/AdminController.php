@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Alat;
 use App\Models\Carts;
 use App\Models\Category;
 use App\Models\Order;
@@ -58,8 +57,7 @@ class AdminController extends Controller
 
         $validated['password'] = Hash::make($validated['password']);
         User::create($validated);
-        $request->session()->$request->flash('registrasi', 'Registrasi Berhasil, Silakan login untuk mulai menyewa');
-
+        $request->session()->flash('registrasi', 'Registrasi Berhasil, Silakan login untuk mulai menyewa');
         return redirect(route('admin.user'));
     }
 

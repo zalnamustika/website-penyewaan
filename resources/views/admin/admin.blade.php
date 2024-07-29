@@ -28,7 +28,7 @@
             <div class="col-xl-3 col-md-6">
                 <div class="card shadow mb-4">
                     <div class="card-body">
-                        <h1>{{ $total_produk }}</h1> Produk
+                        <h1>{{ $total_product }}</h1> Produk
                     </div>
                     <div class="card-footer d-flex align-items-center justify-content-between">
                         <a class="small link-dark stretched-link" href="{{ route('product.index') }}">Kelola Produk</a>

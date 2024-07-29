@@ -65,9 +65,9 @@
                                 </td>
                                 <td>
                                     <div class="d-flex justify-content-between"></div>
-                                    <a class="link-dark" href="{{ route('home.detail',['id' => $item->product->id]) }}" class="link">{{ $item->product->nama_produk }}</a>
+                                    <a class="link-dark" href="{{ route('home.detail',['id' => $item->product->id]) }}" class="link" style="text-decoration: none;">{{ $item->product->nama_produk }}</a>
                                     <span class="badge bg-warning">{{ $item->product->category->nama_kategori }}</span>
-                                    <span class="badge bg-secondary">{{ $item->durasi }} Jam</span>
+                                    <span class="badge bg-secondary">{{ $item->durasi }} Hari</span>
                                     @if ($item->status === 3)
                                         <span class="badge bg-danger">Ditolak</span>
                                     @elseif ($item->status === 2)

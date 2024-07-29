@@ -16,7 +16,7 @@ setelah pembayaran, silakan upload bukti bayar pada website
 | Produk       | Durasi         | Harga  |
 | ------------- |:-------------:| --------:|
 @foreach ($payment->order as $item)
-| {{$item->product->nama_produk}} | {{ $item->durasi }} Jam | @money($item->harga) |
+| {{$item->product->nama_produk}} | {{ $item->durasi }} Jam | {{ formatRupiah($item->harga) }} |
 @endforeach
 @endcomponent
 
