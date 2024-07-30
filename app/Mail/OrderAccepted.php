@@ -31,7 +31,7 @@ class OrderAccepted extends Mailable
      */
     public function build()
     {
-        return $this->from('support@kanciltest.tigasumbu.xyz', 'Rumah Penyewaan Pakaian')
+        return $this->from('zalnamustika111@gmail.com', 'Rumah Penyewaan Pakaian')
                     ->subject('Reservasi Anda Disetujui!')
                     ->markdown('emails.orderaccepted');
     }

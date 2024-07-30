@@ -41,24 +41,32 @@
     </nav>
 
     <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
+        <div class="col-md-5 p-lg-5 mx-auto my-3">
+            <h1 class="display-4 fw-normal">Rumah Penyewaan Pakaian</h1>
+            <p class="fw-normal">Cek Ketersediaan - Reservasi - Bayar - Ambil - Jangan lupa balikin</p>
+            @if (!Auth::check())
+            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#loginModal">Mulai Sewa</button>
+            @endif
+        </div>
+    </div>
 
+    {{-- <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
         <div id="carouselExampleFade" class="carousel slide carousel-fade">
-            <div class="carousel-inner">
+            <div class="carousel-inner">   
                 <div class="carousel-item active">
-                    <img src="images/bg.png" class="d-block w-100" alt="...">
-                    <div class="carousel-caption d-none d-md-block">
-                        <h1 class="display-4 fw-normal">Rumah Penyewaan Pakaian</h1>
+                    <img src="images/banner1.png" class="d-block w-100" alt="...">
+                    <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light" style="color: black;">
+                        <h3 class="display-5 fw-normal">Rumah Penyewaan Pakaian</h3>
                         <p class="fw-normal">Cek Ketersediaan - Reservasi - Bayar - Ambil - Jangan lupa balikin</p>
                         @if (!Auth::check())
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#loginModal">Mulai Sewa!</button>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Mulai Sewa!</button>
                         @endif
                     </div>
                 </div>
                 <div class="carousel-item">
                     <img src="images/bg.png" class="d-block w-100" alt="...">
                     <div class="carousel-caption d-none d-md-block">
-                        <h1 class="display-4 fw-normal">Rumah Penyewaan Pakaian</h1>
+                        <h4 class="display-4 fw-normal">Rumah Penyewaan Pakaian</h4>
                         <h5>Memberikan Pelayanan Terbaik</h5>
                     </div>
                 </div>
@@ -81,7 +89,7 @@
                 <span class="visually-hidden">Next</span>
             </button>
         </div>
-    </div>
+    </div> --}}
 
     <div class="container">
         {{-- Feebacks --}}
@@ -119,10 +127,10 @@
             @if (request()->get('search') == null)
                 <div class="d-flex w-100 justify-content-start mb-4 mt-2" style="overflow: auto">
                     <div class="btn-group" role="group">
-                        <a class="btn {{ request('kategori') == null ? 'btn-success' : 'btn-outline-success' }}"
+                        <a class="btn {{ request('kategori') == null ? 'btn-secondary' : 'btn-outline-secondary' }}"
                             href="{{ route('home') }}">Semua</a>
                         @foreach ($categories as $cat)
-                            <a class="btn {{ request('kategori') == $cat->id ? 'btn-success' : 'btn-outline-success' }}"
+                            <a class="btn {{ request('kategori') == $cat->id ? 'btn-secondary' : 'btn-outline-secondary' }}"
                                 href="?kategori={{ $cat->id }}">{{ $cat->nama_kategori }}</a>
                         @endforeach
                     </div>

@@ -66,9 +66,9 @@
                                             Tambah ke Keranjang
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="addtocartdropdown">
-                                            <li><button type="submit" class="dropdown-item" name="btn" value="1"><i class="fas fa-shopping-cart"></i> {{ formatRupiah($item->harga1h) }} <b>/1hari</b></button></li>
-                                            <li><button type="submit" class="dropdown-item" name="btn" value="3"><i class="fas fa-shopping-cart"></i> {{ formatRupiah($item->harga3h) }} <b>/3hari</b></button></li>
-                                            <li><button type="submit" class="dropdown-item" name="btn" value="7"><i class="fas fa-shopping-cart"></i> {{ formatRupiah($item->harga7h) }} <b>/7hari</b></button></li>
+                                            <li><button type="submit" class="dropdown-item" name="btn" value="24"><i class="fas fa-shopping-cart"></i> {{ formatRupiah($item->harga1h) }} <b>/1hari</b></button></li>
+                                            <li><button type="submit" class="dropdown-item" name="btn" value="72"><i class="fas fa-shopping-cart"></i> {{ formatRupiah($item->harga3h) }} <b>/3hari</b></button></li>
+                                            <li><button type="submit" class="dropdown-item" name="btn" value="168"><i class="fas fa-shopping-cart"></i> {{ formatRupiah($item->harga7h) }} <b>/7hari</b></button></li>
                                         </ul>
                                     </div>
                                 </form>
@@ -95,7 +95,7 @@
                             <b>{{ formatRupiah($item->harga) }}</b>
                           </div>
                           <div class="d-flex w-100 justify-content-between">
-                            <p class="mb-1">{{ $item->durasi }} Hari </p>
+                            <p class="mb-1">{{ $item->durasi }} Jam </p>
                             <form action="{{ route('cart.destroy',['id' => $item->id]) }}" method="POST">
                                 @method('DELETE')
                                 @csrf
