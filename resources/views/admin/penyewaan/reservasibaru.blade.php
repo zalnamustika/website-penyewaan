@@ -38,9 +38,11 @@
                                         <img class="card-img-top" src="{{ url('') }}/images/{{ $item->gambar }}"
                                             alt="">
                                         <div class="card-body">
-                                            <span class="badge bg-warning">{{ $item->category->nama_kategori }}</span><br>
+                                            <span
+                                                class="badge bg-warning">{{ $item->category->nama_kategori }}</span><br>
                                             <b><a class="link-dark"
-                                                    href="{{ route('home.detail', ['id' => $item->id]) }}" style="text-decoration: none;">{{ $item->nama_produk }}</b></a><br>
+                                                    href="{{ route('home.detail', ['id' => $item->id]) }}"
+                                                    style="text-decoration: none;">{{ $item->nama_produk }}</b></a><br>
                                             <small>{{ $item->deskripsi }}</small>
                                         </div>
                                         <div class="card-footer">
@@ -49,18 +51,23 @@
                                                 method="POST">
                                                 @csrf
                                                 <div class="d-block">
-                                                    <button type="submit" class="btn btn-success w-100 mt-2"
-                                                        name="btn" value="1"><i
-                                                            class="fas fa-shopping-cart"></i>
-                                                        {{ formatRupiah($item->harga1h) }} <b>1hari</b></button>
-                                                    <button type="submit" class="btn btn-success w-100 mt-2"
-                                                        name="btn" value="3"><i
-                                                            class="fas fa-shopping-cart"></i>
-                                                        {{ formatRupiah($item->harga3h) }} <b>3hari</b></button>
-                                                    <button type="submit" class="btn btn-success w-100 mt-2"
-                                                        name="btn" value="7"><i
-                                                            class="fas fa-shopping-cart"></i>
-                                                        {{ formatRupiah($item->harga7h) }} <b>7hari</b></button>
+                                                    @php
+                                                        $hargas = \App\Models\Harga::where(
+                                                            'product_id',
+                                                            $item->id,
+                                                        )->get();
+                                                    @endphp
+                                                    @foreach ($hargas as $val)
+                                                        
+                                                            <button type="submit" class="btn btn-success w-100 mt-2" name="harga_id"
+                                                                value="{{ $val->id }}">
+                                                                <i class="fas fa-shopping-cart"></i>
+                                                                {{ formatRupiah($val->harga ?? '') }}
+                                                                <b>/{{ $val->hari ?? '' }} hari</b>
+                                                            </button>
+                                                        
+                                                    @endforeach
+                                                
                                                 </div>
                                             </form>
                                         </div>

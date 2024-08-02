@@ -168,7 +168,6 @@ class OrderController extends Controller
     }
 
 
-
     public function accbayar($id)
     {
         $payment = Payment::find($id);
@@ -205,6 +204,18 @@ class OrderController extends Controller
         ]);
 
         return back();
+    }
+
+    public function terlambat()
+    {
+        // Mengambil data orders yang terlambat dikembalikan
+        $orders = Order::with(['product', 'user', 'payment'])
+        ->where('status', 2) // Asumsi status 2 berarti produk dipinjam
+        ->where('ends', '<', Carbon::now())
+        ->get();
+
+        // Mengirim data ke view
+        return view('admin.penyewaan.terlambat', compact('orders'));
     }
 
     public function cetak(Request $request)

@@ -8,14 +8,14 @@ use Illuminate\Http\Request;
 class CategoryController extends Controller
 {
     public function index() {
-        return view('admin.kategori',[
+        return view('admin.category.kategori',[
            'categories' => Category::all()
         ]);
     }
 
     public function edit($id) {
         $kategori = Category::findOrFail($id);
-        return view('admin.editkategori',[
+        return view('admin.category.editkategori',[
             'kategori' => $kategori
         ]);
     }

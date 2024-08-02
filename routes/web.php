@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ForgetPasswordController;
+use App\Http\Controllers\HargaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\OrderController;
@@ -55,6 +56,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/laporan/cetak', [OrderController::class, 'cetak'])->name('cetak');
     Route::delete('/admin/cancel/{id}', [RentController::class, 'destroy'])->name('admin.penyewaan.cancel');
     Route::patch('/accbayar/{id}', [OrderController::class, 'accbayar'])->name('accbayar');
+    Route::get('/admin/penyewaan/terlambat', [OrderController::class, 'terlambat'])->name('admin.penyewaan.terlambat');
+
 
     Route::get('/admin/buat-reservasi/{userId}', [AdminController::class, 'newOrderIndex'])->name('admin.buatreservasi');
     Route::post('/admin/buat-reservasi/order/{userId}', [AdminController::class, 'createNewOrder'])->name('admin.createorder');
@@ -78,11 +81,19 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/kategori/{id}/edit', [CategoryController::class, 'edit'])->name('kategori.edit');
     Route::patch('/admin/kategori/{id}', [CategoryController::class, 'update'])->name('kategori.update');
     Route::delete('/admin/kategori/{id}', [CategoryController::class, 'destroy'])->name('kategori.destroy');
+
+    // Harga
+    Route::get('/admin/harga', [HargaController::class, 'index'])->name('harga.index');
+    Route::post('/admin/harga', [HargaController::class, 'store'])->name('harga.store');
+    Route::get('/admin/harga/{id}/edit', [HargaController::class, 'edit'])->name('harga.edit');
+    Route::patch('/admin/harga/{id}', [HargaController::class, 'update'])->name('harga.update');
+    Route::delete('/admin/harga/{id}', [HargaController::class, 'destroy'])->name('harga.destroy');
 });
 
 Route::get('/memberarea', [MemberController::class, 'index'])->name('member.index');
 Route::get('/reservasi', [OrderController::class, 'show'])->name('order.show');
 Route::get('/reservasi/detail/{id}', [OrderController::class, 'detail'])->name('order.detail');
+
 Route::middleware('auth')->group(function () {
 
     Route::get('/memberarea/kalender', function () {

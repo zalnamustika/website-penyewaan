@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Carts;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\Payment;
@@ -46,9 +45,7 @@ class ProductController extends Controller
         $this->validate($request, [
             'nama' => 'required',
             'kategori' => 'required',
-            'harga1h' => 'required|numeric',
-            'harga3h' => 'required|numeric',
-            'harga7h' => 'required|numeric',
+            'stok' => 'required',
             'gambar' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048'
         ]);
 
@@ -56,9 +53,7 @@ class ProductController extends Controller
         $product->nama_produk = $request['nama'];
         $product->deskripsi = $request['deskripsi'];
         $product->kategori_id = $request['kategori'];
-        $product->harga1h = $request['harga1h'];
-        $product->harga3h = $request['harga3h'];
-        $product->harga7h = $request['harga7h'];
+        $product->stok = $request['stok'];
 
         if ($request->hasFile('gambar')) {
             $gambar = $request->file('gambar');
@@ -77,9 +72,7 @@ class ProductController extends Controller
         $this->validate($request, [
             'nama' => 'required',
             'kategori' => 'required',
-            'harga1h' => 'required|numeric',
-            'harga3h' => 'required|numeric',
-            'harga7h' => 'required|numeric',
+            'stok' => 'required',
             'gambar' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048'
         ]);
 
@@ -87,9 +80,7 @@ class ProductController extends Controller
         $product->nama_produk = $request['nama'];
         $product->deskripsi = $request['deskripsi'];
         $product->kategori_id = $request['kategori'];
-        $product->harga1h = $request['harga1h'];
-        $product->harga3h = $request['harga3h'];
-        $product->harga7h = $request['harga7h'];
+        $product->stok = $request['stok'];
 
         if ($request->hasFile('gambar')) {
             $gambar = $request->file('gambar');
@@ -99,14 +90,6 @@ class ProductController extends Controller
         }
 
         $product->save();
-
-        // Agar harga pada cart mengikuti saat harga produk di-update oleh Admin
-        $cart = new Carts();
-        $cart->where('product_id', $id)->where('durasi', 1)->update(['harga' => $product->harga1h]);
-        $cart->where('product_id', $id)->where('durasi', 3)->update(['harga' => $product->harga3h]);
-        $cart->where('product_id', $id)->where('durasi', 7)->update(['harga' => $product->harga7h]);
-
-
         return redirect(route('product.index'))->with('message', 'Produk berhasil diperbarui!');
     }
 
@@ -119,7 +102,7 @@ class ProductController extends Controller
             unlink($filepath);
         }
 
-        // Agar 'total' dalam Payment berkurang jika alat dihapus
+        // Agar 'total' dalam Payment berkurang jika produk dihapus
         $payment = new Payment();
         $order = Order::where('product_id', $id)->get();
         foreach ($order as $o) {

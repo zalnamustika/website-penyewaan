@@ -53,6 +53,10 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Reservasi
                             </a>
+                            <a class="nav-link {{ Route::is('admin.penyewaan.terlambat') ? 'active' : '' }}" href="{{ route('admin.penyewaan.terlambat') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Sewa Terlambat
+                            </a>
                             <a class="nav-link {{ Route::is('riwayat-reservasi') ? 'active' : '' }}" href="{{ route('riwayat-reservasi') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Riwayat Reservasi
@@ -73,9 +77,13 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Produk
                             </a>
+                            <a class="nav-link {{ Route::is('harga.index') ? 'active' : '' }}" href="{{ route('harga.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Harga dan Paket
+                            </a>
                             <a class="nav-link {{ Route::is('kategori.index') ? 'active' : '' }}" href="{{ route('kategori.index') }}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Kategori
+                                Kategori Produk
                             </a>
                         </div>
                     </div>

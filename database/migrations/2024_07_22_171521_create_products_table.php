@@ -15,9 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('kategori_id')->references('id')->on('categories')->onDelete('cascade');
             $table->string('nama_produk');
-            $table->integer('harga1h');
-            $table->integer('harga3h');
-            $table->integer('harga7h');
             $table->string('stok')->default(0);
             $table->string('gambar')->default('noimage.jpg');
             $table->text('deskripsi')->nullable();

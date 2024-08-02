@@ -119,9 +119,6 @@ class DatabaseSeeder extends Seeder
             [
                 'kategori_id' => '1',
                 'nama_produk' => 'Baju Koto Gadang',
-                'harga1h' => '70000',
-                'harga3h' => '130000',
-                'harga7h' => '200000',
                 'stok' => '2',
                 'gambar' => 'bajuadat.jpg',
                 'deskripsi' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima facere, distinctio eum ullam quos, exercitationem, a est optio rerum accusantium culpa. Iure eaque architecto magnam minus iusto culpa ipsa, sint eveniet ratione dolore. Aut esse similique sapiente? Veniam vero voluptate laboriosam tenetur dolorem odit ullam, dolor similique placeat quisquam atque?'
@@ -129,9 +126,6 @@ class DatabaseSeeder extends Seeder
             [
                 'kategori_id' => '2',
                 'nama_produk' => 'Baju Songket',
-                'harga1h' => '80000',
-                'harga3h' => '120000',
-                'harga7h' => '300000',
                 'stok' => '1',
                 'gambar' => 'bajuadat.jpg',
                 'deskripsi' => 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Reiciendis iste suscipit recusandae minus perferendis doloremque! Eligendi consectetur iusto vitae atque, aliquam pariatur minus nemo cumque? Facere enim tempora ea eius!'
@@ -139,9 +133,6 @@ class DatabaseSeeder extends Seeder
             [
                 'kategori_id' => '3',
                 'nama_produk' => 'Baju Anak Daro',
-                'harga1h' => '90000',
-                'harga3h' => '140000',
-                'harga7h' => '400000',
                 'stok' => '3',
                 'gambar' => 'bajuadat.jpg',
                 'deskripsi' => 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laboriosam non iusto dignissimos quia ab iure nobis aliquid corporis, quaerat totam quo modi accusantium officia illum vero odio accusamus ipsum tempora ullam optio. Quasi ipsa adipisci veniam illo amet placeat est.'
@@ -149,9 +140,6 @@ class DatabaseSeeder extends Seeder
             [
                 'kategori_id' => '4',
                 'nama_produk' => 'Suntiang biasa',
-                'harga1h' => '80000',
-                'harga3h' => '140000',
-                'harga7h' => '500000',
                 'stok' => '2',
                 'gambar' => 'bajuadat.jpg',
                 'deskripsi' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum blanditiis soluta pariatur recusandae iusto nobis iste placeat quibusdam deleniti odio quasi cum qui delectus nulla corporis, vel temporibus reprehenderit. Commodi eligendi sint alias molestias architecto?'
