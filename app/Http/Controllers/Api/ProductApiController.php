@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class ProductApiController extends Controller
 {
-    public function showAllAlat() {
+    public function showAllProduct() {
         if(request('category')) {
             $query = request('category');
             $filtered = DB::table('products')
@@ -29,13 +29,13 @@ class ProductApiController extends Controller
                 ], 404, ['Content-Type' => 'application/json']);
             }
         } else {
-            $alat = DB::table('alats')
-                ->join('categories', 'categories.id','alats.kategori_id')
-                ->get(['products.id','kategori_id','nama_produk','harga','ukuran','gambar','deskripsi','nama_kategori']);
+            $product = DB::table('products')
+                ->join('categories', 'categories.id','products.kategori_id')
+                ->get(['products.id','kategori_id','nama_produk','ukuran','gambar', 'stok','deskripsi','nama_kategori']);
 
             return response()->json([
                 'message' => 'success',
-                'data' => $alat
+                'data' => $product
             ],200, ['Content-Type' => 'application/json']);
         }
     }

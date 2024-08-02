@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('harga1h');
             $table->integer('harga3h');
             $table->integer('harga7h');
-            $table->string('jumlah')->nullable();
+            $table->string('stok')->default(0);
             $table->string('gambar')->default('noimage.jpg');
             $table->text('deskripsi')->nullable();
             $table->timestamps();

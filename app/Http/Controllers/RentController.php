@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\Product;
 
 class RentController extends Controller
 {
@@ -25,12 +26,29 @@ class RentController extends Controller
     }
 
     public function destroy($id) {
-        $payment = Payment::find($id);
-
+        // Temukan entri Payment berdasarkan ID
+        $payment = Payment::findOrFail($id);
+    
+        // Dapatkan semua Orders terkait dengan entri Payment tersebut
+        $orders = Order::where('payment_id', $payment->id)->get();
+    
+        foreach($orders as $order) {
+            // Temukan produk terkait dengan entri Order
+            $product = Product::find($order->product_id);
+            
+            if ($product) {
+                // Kembalikan jumlah stok produk
+                $product->stok += $order->quantity;
+                $product->save();
+            }
+        }
+    
+        // Hapus entri Payment
         $payment->delete();
-
-        return redirect(route('penyewaan.index'));
-    }
+    
+        // Redirect ke halaman penyewaan
+        return redirect()->route('penyewaan.index')->with('success', 'Payment dan related orders berhasil dihapus.');
+    }    
 
     public function riwayat() {
         return view('admin.penyewaan.riwayat',[

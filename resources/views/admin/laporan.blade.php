@@ -25,14 +25,15 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ date('D, d M Y', strtotime($item->tanggal)) }}</td>
-                        <td>{{ $item->nama_produk }}</td>
-                        <td>{{ $item->name }}</td>
-                        <td style="text-align: right"><b>{{ formatRupiah($item->harga) }}</b></td>
+                        <td>{{ $item->product->nama_produk }}</td>
+                        <td>{{ $item->user->name }}</td>
+                        <td><b>{{ formatRupiah($item->harga) }}</b></td>
                     </tr>
                     @endforeach
                     <tr>
-                        <td colspan="4"></td>
-                        <td style="text-align: right"><b>{{ formatRupiah($total) }}</b></td>
+                        <td colspan="3"></td>
+                        <td><b>Total</b></td>
+                        <td ><b>{{ formatRupiah($total) }}</b></td>
                     </tr>
                 </tbody>
             </table>

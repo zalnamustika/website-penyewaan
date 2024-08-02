@@ -83,6 +83,7 @@
                                             <div class="card-body">
                                                 <span class="badge bg-warning">{{ $product->category->nama_kategori }}</span>
                                                 <h6 class="card-title">{{ $product->nama_produk }}</h6>
+                                                <p>Tersedia {{ $product->stok }} produk</p>
                                             </div>
                                             <ul class="list-group list-group-flush">
                                                 <li class="list-group-item">{{ formatRupiah($product->harga1h) }}<span class="badge bg-light text-dark" style="float: right;">1 Hari</span></li>
@@ -122,7 +123,7 @@
         </section>
         <!-- Footer-->
         <footer class="py-5 bg-dark">
-            <div class="container px-4"><p class="m-0 text-center text-white">&copy; 2022 Kancil Rental Kamera</p></div>
+            <div class="container px-4"><p class="m-0 text-center text-white">&copy; Rumah Penyewaan Pakaian</p></div>
         </footer>
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

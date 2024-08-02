@@ -19,7 +19,8 @@ return new class extends Migration
             $table->integer('durasi');
             $table->dateTime('starts');
             $table->dateTime('ends');
-            $table->integer('harga');
+            $table->string('harga');
+            $table->string('quantity')->default(1);
             $table->integer('status')->default(1);
             $table->timestamps();
         });

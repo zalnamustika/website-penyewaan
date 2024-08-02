@@ -27,6 +27,8 @@
                                             <span class="badge bg-success">Sudah Bayar</span>
                                         @elseif ($item->status == 4)
                                             <span class="badge bg-secondary">Selesai</span>
+                                        @elseif ($item->status == 5)
+                                            <span class="badge bg-danger">Pembayaran Gagal</span>
                                         @endif
                                     </td>
                                     <td>{{ date('D, d M Y H:i', strtotime($item->created_at)) }}</td>

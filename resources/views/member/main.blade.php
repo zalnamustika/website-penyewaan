@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <!-- Bootstrap CSS -->
@@ -29,14 +30,14 @@
             </div>
         </nav>
         <ul class="nav nav-tabs nav-fill d-none d-sm-flex">
-            <li class="nav-item"><a class="nav-link {{ Route::is('member.index') ? 'active': '' }}" href="{{ route('member.index') }}">Explore</a></li>
+            <li class="nav-item"><a class="nav-link {{ Route::is('member.index') ? 'active': '' }}" href="{{ route('member.index') }}">Produk</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ route('member.index') }}#keranjang" onclick="$('#keranjang').delay(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100)">Keranjang Anda <span class="badge bg-secondary">{{ Auth::user()->cart->count() }}</span></a></li>
             <li class="nav-item"><a class="nav-link {{ Route::is('order.show') ? 'active': '' }}" href="{{ route('order.show') }}">Reservasi Anda <span class="badge bg-secondary">{{ Auth::user()->payment->count() }}</span></a></li>
             <li class="nav-item"><a class="nav-link {{ Route::is('member.kalender') ? 'active': '' }}" href="{{ route('member.kalender') }}">Kalender</span></a></li>
         </ul>
         <div class="container-fluid px-4 mt-4">
             {{-- <div class="alert alert-success" role="alert">
-                <p>Selamat datang di member area, sekarang kamu dapat memesan dengan menambahkan produk ke dalam keranjang</p>
+                <p>Selamat datang di member area, sekarang kamu dapat memesan dengan menambahkan alat ke dalam keranjang</p>
                 <p>Baru pernah menyewa disini? simak panduan penyewaan <a href="" class="link-dark">disini</a></p>
             </div> --}}
             @yield('container')
@@ -48,7 +49,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                                 <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
                             </svg>
-                            <span class="small d-block">Explore</span>
+                            <span class="small d-block">Produk</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -86,5 +87,6 @@
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+        @stack('custom-script')
     </body>
 </html>

@@ -50,15 +50,15 @@
                                                 @csrf
                                                 <div class="d-block">
                                                     <button type="submit" class="btn btn-success w-100 mt-2"
-                                                        name="btn" value="24"><i
+                                                        name="btn" value="1"><i
                                                             class="fas fa-shopping-cart"></i>
                                                         {{ formatRupiah($item->harga1h) }} <b>1hari</b></button>
                                                     <button type="submit" class="btn btn-success w-100 mt-2"
-                                                        name="btn" value="72"><i
+                                                        name="btn" value="3"><i
                                                             class="fas fa-shopping-cart"></i>
                                                         {{ formatRupiah($item->harga3h) }} <b>3hari</b></button>
                                                     <button type="submit" class="btn btn-success w-100 mt-2"
-                                                        name="btn" value="168"><i
+                                                        name="btn" value="7"><i
                                                             class="fas fa-shopping-cart"></i>
                                                         {{ formatRupiah($item->harga7h) }} <b>7hari</b></button>
                                                 </div>
@@ -86,7 +86,7 @@
                                             <b>{{ formatRupiah($item->harga) }}</b>
                                         </div>
                                         <div class="d-flex w-100 justify-content-between">
-                                            <p class="mb-1">{{ $item->durasi }} Jam </p>
+                                            <p class="mb-1">{{ $item->durasi }} hari </p>
                                             <form action="{{ route('cart.destroy', ['id' => $item->id]) }}"
                                                 method="POST">
                                                 @method('DELETE')

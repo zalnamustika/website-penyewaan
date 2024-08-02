@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('total');
             $table->string('bukti')->nullable();
             $table->integer('status')->default(1);
+            $table->timestamp('countdown_start')->nullable();
             $table->timestamps();
         });
     }

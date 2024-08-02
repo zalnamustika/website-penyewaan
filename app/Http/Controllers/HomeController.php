@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\Product;
-use NumberFormatter;
 
 class HomeController extends Controller
 {
@@ -20,7 +19,7 @@ class HomeController extends Controller
             $products = Product::with(['category'])->where('kategori_id', '=', request('kategori'))->get();
         }
 
-        return view('home2', [
+        return view('/home2', [
             'products' => $products,
             'categories' => Category::all()
         ]);

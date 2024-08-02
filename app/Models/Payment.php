@@ -16,6 +16,7 @@ class Payment extends Model
     }
 
     public function order() {
-        return $this->hasMany(Order::class, 'payment_id');
+        return $this->hasMany(Order::class, 'payment_id', 'id');
     }
+
 }

@@ -15,6 +15,8 @@
                             <span class="badge bg-success">Sudah Bayar</span>
                         @elseif ($status == 4)
                             <span class="badge bg-secondary">Selesai</span>
+                        @elseif ($status == 5)
+                            <span class="badge bg-danger">Pembayaran gagal</span>
                         @endif
                     </div>
                 </div>
@@ -67,11 +69,13 @@
                                     <div class="d-flex justify-content-between"></div>
                                     <a class="link-dark" href="{{ route('home.detail',['id' => $item->product->id]) }}" class="link" style="text-decoration: none;">{{ $item->product->nama_produk }}</a>
                                     <span class="badge bg-warning">{{ $item->product->category->nama_kategori }}</span>
-                                    <span class="badge bg-secondary">{{ $item->durasi }} Jam</span>
+                                    <span class="badge bg-secondary">{{ $item->durasi }} Hari</span>
                                     @if ($item->status === 3)
                                         <span class="badge bg-danger">Ditolak</span>
                                     @elseif ($item->status === 2)
                                         <span class="badge bg-success">ACC</span>
+                                    @elseif ($item->status === 5)
+                                        <span class="badge bg-danger">Pembayaran Gagal</span>
                                     @endif
                                 </td>
                                 <td>{{ date('d M Y H:i', strtotime($item->ends)) }}</td>
@@ -105,7 +109,7 @@
                         <button type="submit" class="btn btn-success mb-4" onclick="javascript: return confirm('Pastikan produk sudah dikembalikan semua, jika yakin lanjutkan');">Sudah dikembalikan</button>
                     </form>
                     @endif
-                    @if ($status != 1)
+                    @if ($status != 1 && $status != 5)
                     <div class="accordion" id="accordionExample">
                         <div class="accordion-item">
                           <h2 class="accordion-header" id="headingOne">

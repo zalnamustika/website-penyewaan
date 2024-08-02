@@ -102,9 +102,9 @@ class ProductController extends Controller
 
         // Agar harga pada cart mengikuti saat harga produk di-update oleh Admin
         $cart = new Carts();
-        $cart->where('product_id', $id)->where('durasi', 24)->update(['harga' => $product->harga1h]);
-        $cart->where('product_id', $id)->where('durasi', 72)->update(['harga' => $product->harga3h]);
-        $cart->where('product_id', $id)->where('durasi', 168)->update(['harga' => $product->harga7h]);
+        $cart->where('product_id', $id)->where('durasi', 1)->update(['harga' => $product->harga1h]);
+        $cart->where('product_id', $id)->where('durasi', 3)->update(['harga' => $product->harga3h]);
+        $cart->where('product_id', $id)->where('durasi', 7)->update(['harga' => $product->harga7h]);
 
 
         return redirect(route('product.index'))->with('message', 'Produk berhasil diperbarui!');

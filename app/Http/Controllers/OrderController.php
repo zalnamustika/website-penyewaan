@@ -7,26 +7,38 @@ use App\Mail\OrderPaid;
 use App\Models\Carts;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\Product;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
+    // public function show()
+    // {
+    //     $reservasi = Payment::with('order')->where('user_id', Auth::id())
+    //         ->where('status', '!=', 4)
+    //         ->orderBy('id', 'DESC')
+    //         ->get();
+    //     $riwayat = Payment::with('order')->where('user_id', Auth::id())
+    //         ->where('status', 4)
+    //         ->orderBy('id', 'DESC')
+    //         ->get();
+
+    //     return view('member.reservasi', compact('reservasi', 'riwayat'));
+    // }
+
     public function show()
     {
-        $reservasi = Payment::with('order')->where('user_id', Auth::id())
-            ->where('status', '!=', 4)
-            ->orderBy('id', 'DESC')
-            ->get();
-        $riwayat = Payment::with('order')->where('user_id', Auth::id())
-            ->where('status', 4)
-            ->orderBy('id', 'DESC')
-            ->get();
-
-        return view('member.reservasi', compact('reservasi', 'riwayat'));
+        $payment = Payment::with(['user', 'order'])->where('user_id', Auth::id());
+        return view('member.reservasi', [
+            'reservasi' => $payment->where('status', '!=', 4)->orderBy('id', 'DESC')->get(),
+            'riwayat' => Payment::with(['user', 'order'])->where('user_id', Auth::id())->where('status', 4)->orderBy('id', 'DESC')->get()
+        ]);
     }
 
     public function detail($id)
@@ -36,6 +48,7 @@ class OrderController extends Controller
 
         if ($payment->user_id == Auth::id()) {
             return view('member.detailreservasi', [
+                'paymentss' => $payment,
                 'detail' => $detail,
                 'total' => $payment->total,
                 'paymentId' => $payment->id,
@@ -86,7 +99,7 @@ class OrderController extends Controller
 
     public function acc(Request $request, $paymentId)
     {
-        $orders = $request->order;
+        $orders = $request->order ?? [];
         $payment = new Payment();
 
         foreach ($orders as $o) {
@@ -119,6 +132,43 @@ class OrderController extends Controller
         return back();
     }
 
+    public function ditolakbayar(Request $request)
+    {
+        Log::info('Received request to reject payment:', ['id' => $request->id]);
+
+        // Temukan entri Payment berdasarkan ID
+        $payment = Payment::find($request->id);
+
+        if (!$payment) {
+            Log::warning('Payment not found:', ['id' => $request->id]);
+            return response()->json(['error' => 'Payment not found'], 404);
+        }
+
+        // Dapatkan semua Orders terkait dengan entri Payment tersebut
+        $orders = Order::where('payment_id', $payment->id)->get();
+
+        foreach ($orders as $order) {
+            // Temukan produk terkait dengan entri Order
+            $product = Product::find($order->product_id);
+
+            if ($product) {
+                // Kembalikan jumlah stok produk
+                $product->stok += $order->quantity;
+                $product->save();
+            } else {
+                Log::warning('Product not found for order:', ['order_id' => $order->id, 'product_id' => $order->product_id]);
+            }
+        }
+
+        // Perbarui status Payment
+        $payment->update(['status' => 5]);
+        Log::info('Payment status updated:', ['id' => $payment->id, 'status' => $payment->status]);
+
+        return response()->json(['message' => 'Status updated successfully'], 200);
+    }
+
+
+
     public function accbayar($id)
     {
         $payment = Payment::find($id);
@@ -133,29 +183,50 @@ class OrderController extends Controller
 
     public function produkkembali($id)
     {
-        Payment::find($id)->update([
+        $payment = Payment::findOrFail($id);
+
+        // Dapatkan semua Orders terkait dengan entri Payment tersebut
+        $orders = Order::where('payment_id', $payment->id)->get();
+
+        foreach ($orders as $order) {
+            // Temukan produk terkait dengan entri Order
+            $product = Product::find($order->product_id);
+
+            if ($product) {
+                // Kembalikan jumlah stok produk
+                $product->stok += $order->quantity;
+                $product->save();
+            }
+        }
+
+        // Hapus entri Payment
+        $payment->update([
             'status' => 4
         ]);
 
         return back();
     }
 
-    public function cetak()
+    public function cetak(Request $request)
     {
-        $dari = request('dari');
-        $sampai = request('sampai');
-        $laporan = DB::table('orders')
-            ->join('payments', 'payments.id', 'orders.payment_id')
-            ->join('products', 'products.id', 'orders.product_id')
-            ->join('users', 'users.id', 'orders.user_id')
-            ->whereBetween('orders.created_at', [$dari, $sampai])
-            ->where('orders.status', 2)
-            ->where('payments.status', '>', 2)
-            ->get(['*', 'orders.created_at AS tanggal']);
-
-        return view('admin.laporan', [
-            'laporan' => $laporan,
-            'total' => $laporan->sum('harga')
+        $validatedData = $request->validate([
+            'dari' => 'required|date',
+            'sampai' => 'required|date'
         ]);
+
+        $dari = $validatedData['dari'];
+        $sampai = $validatedData['sampai'];
+
+        $laporan = Order::with(['payment', 'product', 'user'])
+            ->whereBetween('created_at', [$dari, $sampai])
+            ->where('status', 2)
+            ->whereHas('payment', function ($query) {
+                $query->where('status', '>', 2);
+            })
+            ->get(['*', 'created_at AS tanggal']);
+
+        $total = $laporan->sum('harga');
+
+        return view('admin.laporan', compact('laporan', 'total'));
     }
 }
