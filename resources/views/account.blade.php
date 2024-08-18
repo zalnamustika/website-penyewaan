@@ -13,7 +13,7 @@
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="mainNav">
             <div class="container px-4">
-                <a class="navbar-brand" href="{{ route('home') }}">Pengaturan Akun</a>
+                <a class="navbar-brand" href="{{ route('member.index') }}">Pengaturan Akun</a>
             </div>
         </nav>
         <div class="container mt-4 px-3">

@@ -46,12 +46,12 @@ class DatabaseSeeder extends Seeder
             [
                 'product_id' => '1',
                 'harga' => '100000',
-                'hari' => '1'
+                'hari' => '3'
             ],
             [
                 'product_id' => '1',
                 'harga' => '130000',
-                'hari' => '1'
+                'hari' => '7'
             ],
             [
                 'product_id' => '2',
@@ -61,12 +61,12 @@ class DatabaseSeeder extends Seeder
             [
                 'product_id' => '2',
                 'harga' => '100000',
-                'hari' => '1'
+                'hari' => '3'
             ],
             [
                 'product_id' => '2',
                 'harga' => '130000',
-                'hari' => '1'
+                'hari' => '7'
             ],
             [
                 'product_id' => '3',
@@ -76,12 +76,12 @@ class DatabaseSeeder extends Seeder
             [
                 'product_id' => '3',
                 'harga' => '100000',
-                'hari' => '1'
+                'hari' => '3'
             ],
             [
                 'product_id' => '3',
                 'harga' => '130000',
-                'hari' => '1'
+                'hari' => '7'
             ],
             [
                 'product_id' => '4',
@@ -91,12 +91,12 @@ class DatabaseSeeder extends Seeder
             [
                 'product_id' => '4',
                 'harga' => '100000',
-                'hari' => '1'
+                'hari' => '3'
             ],
             [
                 'product_id' => '4',
                 'harga' => '130000',
-                'hari' => '1'
+                'hari' => '7'
             ],
         ]);        
 

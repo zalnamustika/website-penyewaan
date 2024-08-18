@@ -51,7 +51,7 @@
                 <div class="card mb-4 shadow">
                     <div class="card-header">
                         @if (Auth::guest())
-                            <a href="{{ route('home') }}" class="link-dark" style="text-decoration: none;"><i
+                            <a href="{{ route('member.index') }}" class="link-dark" style="text-decoration: none;"><i
                                     class="fas fa-arrow-left"></i> Kembali</a>
                         @elseif (Auth::user()->role == 0)
                             <a href="{{ route('member.index') }}" class="link-dark" style="text-decoration: none;"><i
@@ -63,13 +63,14 @@
                     </div>
                     <img class="card-img-top" src="{{ url('') }}/images/{{ $detail->gambar }}" alt="">
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item"> {{ formatRupiah($detail->harga1h) }}<span
-                                class="badge bg-light text-dark" style="float: right;">/ 1hari</span></li>
-                        <li class="list-group-item"> {{ formatRupiah($detail->harga3h) }}<span
-                                class="badge bg-light text-dark" style="float: right;">/ 3hari</span></li>
-                        <li class="list-group-item"> {{ formatRupiah($detail->harga7h) }}<span
-                                class="badge bg-light text-dark" style="float: right;">/ 7hari</span></li>
-
+                        @php
+                            $hargas = \App\Models\Harga::where('product_id', $detail->id)->get();
+                        @endphp
+                        @foreach ($hargas as $val)
+                            <li class="list-group-item"> {{ formatRupiah($val->harga ?? '') }} <span
+                                    class="badge bg-light text-dark" style="float: right;">/
+                                    {{ $val->hari ?? '' }}hari</span></li>
+                        @endforeach
                     </ul>
                 </div>
             </div>
@@ -80,19 +81,19 @@
                         <p class="text-muted">{{ $detail->deskripsi }}</p>
                         @if (Auth::check() && Auth::user()->role == 0)
                             <form
-                                action="{{ route('cart.store', ['id' => $detail->id, 'userId' => Auth::user()->id]) }}"
+                                action="{{ route('member.keranjang') }}"
                                 method="POST">
                                 @csrf
                                 <div class="d-flex">
-                                    <button type="submit" class="btn btn-success mx-2" name="btn" value="1"><i
-                                            class="fas fa-shopping-cart"></i> {{ formatRupiah($detail->harga1h) }}
-                                        <b>1hari</b></button>
-                                    <button type="submit" class="btn btn-success mx-2" name="btn" value="3"><i
-                                            class="fas fa-shopping-cart"></i> {{ formatRupiah($detail->harga3h) }}
-                                        <b>3hari</b></button>
-                                    <button type="submit" class="btn btn-success mx-2" name="btn" value="7"><i
-                                            class="fas fa-shopping-cart"></i> {{ formatRupiah($detail->harga7h) }}
-                                        <b>7hari</b></button>
+                                    @php
+                                        $hargas = \App\Models\Harga::where('product_id', $detail->id)->get();
+                                    @endphp
+                                    @foreach ($hargas as $val)
+                                        <button type="submit" class="btn btn-success mx-2" name="btn"
+                                            value="{{ $val->id }}"><i class="fas fa-shopping-cart"></i>
+                                            {{ formatRupiah($val->harga ?? '') }}
+                                            <b>/{{ $val->hari ?? '' }}hari</b></button>
+                                    @endforeach
                                 </div>
                             </form>
                             <p class="text-muted">Anda sedang login sebagai <b>{{ Auth::user()->name }}</b></p>
@@ -152,39 +153,39 @@
                     center: 'title',
                 },
                 buttonText: {
-                today: 'Hari Ini',
-                month: 'Bulan',
-                day: 'Hari'
-            },
-            eventContent: function(arg) {
-                // Use FullCalendar's provided content injection
-                let eventLink = document.createElement('a');
-                eventLink.href = '#';
-                eventLink.textContent = arg.event.title;
+                    today: 'Hari Ini',
+                    month: 'Bulan',
+                    day: 'Hari'
+                },
+                eventContent: function(arg) {
+                    // Use FullCalendar's provided content injection
+                    let eventLink = document.createElement('a');
+                    eventLink.href = '#';
+                    eventLink.textContent = arg.event.title;
 
-                let eventEl = document.createElement('div');
-                eventEl.appendChild(eventLink);
+                    let eventEl = document.createElement('div');
+                    eventEl.appendChild(eventLink);
 
-                return {
-                    domNodes: [eventEl]
-                };
-            },
-            dateClick: function(info) {
-                // Prevent navigation for dates without events
-                if (!info.dateStr) {
-                    info.jsEvent.preventDefault();
-                }
-            },
-            datesSet: function(info) {
-                // Remove links from dates without events
-                let dates = document.querySelectorAll('.fc-daygrid-day');
-                dates.forEach(function(date) {
-                    if (!date.querySelector('.fc-event')) {
-                        date.classList.add('no-event');
+                    return {
+                        domNodes: [eventEl]
+                    };
+                },
+                dateClick: function(info) {
+                    // Prevent navigation for dates without events
+                    if (!info.dateStr) {
+                        info.jsEvent.preventDefault();
                     }
-                });
-            },
-            allDayText: 'semua'
+                },
+                datesSet: function(info) {
+                    // Remove links from dates without events
+                    let dates = document.querySelectorAll('.fc-daygrid-day');
+                    dates.forEach(function(date) {
+                        if (!date.querySelector('.fc-event')) {
+                            date.classList.add('no-event');
+                        }
+                    });
+                },
+                allDayText: 'semua'
             });
             calendar.render();
         });

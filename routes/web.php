@@ -28,9 +28,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', [MemberController::class, 'index'])->name('member.index');
 Route::get('/detail/{id}', [HomeController::class, 'detail'])->name('home.detail');
-Route::post('/login', [AuthController::class, 'authenticate']);
+Route::get('/login', [AuthController::class, 'index'])->name('login');
+Route::post('/login', [AuthController::class, 'authenticate'])->name('login.auth');
 Route::get('/daftar', [RegisterController::class, 'index'])->name('daftar');
 Route::post('/daftar', [RegisterController::class, 'store'])->name('register.store');
 
@@ -52,7 +53,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/penyewaan/detail/{id}', [RentController::class, 'detail'])->name('penyewaan.detail');
     Route::get('/admin/riwayat-reservasi', [RentController::class, 'riwayat'])->name('riwayat-reservasi');
     Route::patch('/acc/{paymentId}', [OrderController::class, 'acc'])->name('acc');
-    Route::patch('/admin/selesai/{id}', [OrderController::class, 'produkkembali'])->name('selesai');
+    Route::get('/acc/{paymentId}', [OrderController::class, 'acc'])->name('acc');
+    Route::patch('/admin/selesai/{id}',[OrderController::class,'produkkembali'])->name('selesai');
+    Route::post('/orders/{id}/add-comment', [OrderController::class, 'addComment'])->name('orders.addComment');
+    // Route::post('/produkkembali', [OrderController::class, 'produkkembali'])->name('produkkembali');
     Route::get('/admin/laporan/cetak', [OrderController::class, 'cetak'])->name('cetak');
     Route::delete('/admin/cancel/{id}', [RentController::class, 'destroy'])->name('admin.penyewaan.cancel');
     Route::patch('/accbayar/{id}', [OrderController::class, 'accbayar'])->name('accbayar');
@@ -68,7 +72,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::patch('admin/user/promote/{id}', [UserController::class, 'promote'])->name('user.promote');
     Route::patch('admin/user/demote/{id}', [UserController::class, 'demote'])->name('user.demote');
 
-    // Alat
+    // Produk
     Route::get('/admin/product/{id?}', [ProductController::class, 'index'])->name('product.index');
     Route::get('/admin/product/{id}/detail', [ProductController::class, 'edit'])->name('product.edit');
     Route::patch('/admin/product/{id}/detail', [ProductController::class, 'update'])->name('product.update');
@@ -91,25 +95,28 @@ Route::middleware(['auth', 'admin'])->group(function () {
 });
 
 Route::get('/memberarea', [MemberController::class, 'index'])->name('member.index');
-Route::get('/reservasi', [OrderController::class, 'show'])->name('order.show');
-Route::get('/reservasi/detail/{id}', [OrderController::class, 'detail'])->name('order.detail');
-
 Route::middleware('auth')->group(function () {
 
     Route::get('/memberarea/kalender', function () {
         return view('member.kalender');
     })->name('member.kalender');
 
+    Route::get('/keranjang', [MemberController::class, 'keranjang'])->name('keranjang.show');
+    Route::post('/keranjang', [MemberController::class, 'keranjang'])->name('member.keranjang');
+    Route::get('/reservasi', [OrderController::class, 'show'])->name('order.show');
+    Route::get('/reservasi/detail/{id}', [OrderController::class, 'detail'])->name('order.detail');
+
     // Carts
     Route::post('/memberarea/store/{id}/{userId}', [CartController::class, 'store'])->name('cart.store');
     Route::delete('/memberarea/delete/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
-
+    Route::post('/cart/clear', [CartController::class, 'clearCartAfterTimeout'])->name('cart.clear');
+    
     // Orders
     Route::post('/checkout', [OrderController::class, 'create'])->name('order.create');
     Route::post('/reservasi/ditolakbayar', [OrderController::class, 'ditolakbayar'])->name('order.ditolakbayar');
     Route::patch('/bayar/{id}', [OrderController::class, 'bayar'])->name('bayar');
     Route::delete('/reservasi/cancel/{id}', [OrderController::class, 'destroy'])->name('cancel');
-    Route::post('/cart/clear', [CartController::class, 'clearCartAfterTimeout'])->name('cart.clear');
+
 
     Route::get('/akun/pengaturan', [UserController::class, 'edit'])->name('akun.pengaturan');
     Route::patch('/akun/pengaturan', [UserController::class, 'update'])->name('akun.update');

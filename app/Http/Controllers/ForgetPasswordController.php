@@ -57,6 +57,6 @@ class ForgetPasswordController extends Controller
         User::where('email', $request->email)->update(['password' => Hash::make($request->password)]);
         DB::table('password_resets')->where(['email'=> $request->email])->delete();
 
-        return redirect(route('home'))->with('success_reset_password', 'Reset Password Berhasil!');
+        return redirect(route('member.index'))->with('success_reset_password', 'Reset Password Berhasil!');
     }
 }

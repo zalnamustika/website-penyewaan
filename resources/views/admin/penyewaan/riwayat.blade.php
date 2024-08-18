@@ -17,7 +17,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($penyewaan as $item)
+                            @foreach ($penyewaan->where('status', 4) as $item)
                                 <tr>
                                     <td> {{ $item->no_invoice }} <span class="badge bg-secondary">Selesai</span></td>
                                     <td>{{ date('D, d M Y H:i', strtotime($item->created_at)) }}</td>

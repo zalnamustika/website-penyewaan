@@ -13,7 +13,7 @@
                         {{ session('message') }}
                     </div>
                 @endif
-                <a href="{{ route('home') }}" class="btn-link mb-3">kembali ke halaman utama</a>
+                <a href="{{ route('member.index') }}" class="btn-link mb-3">kembali ke halaman utama</a>
                 <form action="{{ route('forgetpassword.sendlink') }}" method="POST">
                     @csrf
                     <input type="text" class="form-control mb-3" name="email" placeholder="Masukkan email anda" required>

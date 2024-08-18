@@ -20,6 +20,7 @@ return new class extends Migration
             $table->dateTime('starts');
             $table->dateTime('ends');
             $table->string('harga');
+            $table->text('komentar')->nullable();
             $table->string('quantity')->default(1);
             $table->integer('status')->default(1);
             $table->timestamps();

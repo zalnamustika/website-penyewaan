@@ -4,7 +4,7 @@
         <div class="container-fluid px-4">
             <h1 class="mt-4">Manajemen Produk</h1>
             <ol class="breadcrumb mb-4">
-                <li class="breadcrumb-item active">Manajemen Produk</li>
+                <li class="breadcrumb-item active">Dashboard</li>
             </ol>
             <div class="row">
                 @if (session()->has('message'))
@@ -110,21 +110,41 @@
                             <textarea class="form-control" name="deskripsi" rows="3" placeholder="Deskripsi singkat"></textarea>
                         </div>
                         <div class="mb-3">
-                            <div class="row">
-                                <span class="form-text mb-2">Harga ditulis angka saja, tidak perlu tanda titik</span>
-                                <div class="col col-4"><input type="number" name="harga1h" class="form-control"
-                                        placeholder="Harga per Hari" required></div>
-                            </div>
+                            <span class="form-text mb-2">pastikan stok sesuai </span>
+                            <input type="stok" name="stok" class="form-control"
+                                placeholder="Jumlah stok yang tersedia " required>
                         </div>
                         <div class="mb-3">
                             <span class="form-text">Upload Gambar Produk</span>
                             <input type="file" name="gambar" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <span class="form-text">Pilih Paket</span>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Paket Hari</th>
+                                    <th>Harga</th>
+                                </tr>
+                                <tr>
+                                    <td>1 Hari</td>
+                                    <td><input type="text" name="harga_1_hari" class="form-control"></td>
+                                </tr>
+                                <tr>
+                                    <td>3 Hari</td>
+                                    <td><input type="text" name="harga_3_hari" class="form-control"></td>
+                                </tr>
+                                <tr>
+                                    <td>7 Hari</td>
+                                    <td><input type="text" name="harga_7_hari" class="form-control"></td>
+                                </tr>
+                            </table>
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">Tambah</button>
                         </div>
                     </form>
                 </div>
+
             </div>
         </div>
     </div>

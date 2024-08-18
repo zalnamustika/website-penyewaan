@@ -19,7 +19,7 @@ class HomeController extends Controller
             $products = Product::with(['category'])->where('kategori_id', '=', request('kategori'))->get();
         }
 
-        return view('/home2', [
+        return view('home', [
             'products' => $products,
             'categories' => Category::all()
         ]);

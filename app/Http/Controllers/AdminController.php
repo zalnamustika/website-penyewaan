@@ -15,39 +15,88 @@ use Carbon\Carbon;
 
 class AdminController extends Controller
 {
-    public function index() {
-        $topUser = User::withCount('payment')->orderBy('payment_count', 'DESC')->limit(5)->get();
-        $topProducts = Product::withCount('order')->orderBy('order_count', "DESC")->limit(5)->get();
-        return view('admin.admin',[
+    public function index()
+    {
+        $topUser = User::withCount('payment')
+            ->orderBy('payment_count', 'DESC')
+            ->limit(5)
+            ->get();
+
+        $topProducts = Product::withCount('order')
+            ->orderBy('order_count', 'DESC')
+            ->limit(10)
+            ->get();
+
+        // Ambil data order yang terlambat dikembalikan dengan pagination
+        $lateOrders = Order::with(['product', 'user', 'payment'])
+            ->where('status', 2)
+            ->where('ends', '<', Carbon::now())
+            ->get();
+
+        // Ambil data order yang belum diacc oleh admin dengan pagination
+        $belumAcc = Order::with(['product', 'user'])
+            ->where('status', 1)
+            ->where('status', '!=', 5)
+            ->orderByRaw('DATEDIFF(NOW(), ends) DESC') // Urutkan berdasarkan keterlambatan terlama
+            ->get()
+            ->map(function ($order) {
+                // Menghitung jumlah hari keterlambatan
+                $now = Carbon::now();
+                $ends = Carbon::parse($order->ends);
+                $order->daysLate = $now->diffInDays($ends);
+
+                // Tentukan kelas warna berdasarkan keterlambatan
+                if ($order->daysLate == 1) {
+                    $order->colorClass = 'table-danger'; // Hijau untuk keterlambatan 1 hari
+                } elseif ($order->daysLate >= 2 && $order->daysLate <= 3) {
+                    $order->colorClass = 'table-warning'; // Kuning untuk keterlambatan 2-3 hari
+                } else {
+                    $order->colorClass = 'table-success'; // Merah untuk keterlambatan lebih dari 3 hari
+                }
+
+                return $order;
+            });
+
+        $belumBayar = Order::whereHas('payment') // Memastikan ada bukti pembayaran
+            ->where('status', '<>', [3]) // Status yang diinginkan
+            ->get();
+
+        return view('admin.admin', [
             'loggedUsername' => Auth::user()->name,
-            'total_user' => User::where('role',0)->count(),
+            'total_user' => User::where('role', 0)->count(),
             'total_product' => Product::count(),
             'total_kategori' => Category::count(),
             'total_penyewaan' => Payment::count(),
             'top_user' => $topUser,
-            'top_products' => $topProducts
+            'top_products' => $topProducts,
+            'orders' => $lateOrders,
+            'belumAcc' => $belumAcc,
+            'belumBayar' => $belumBayar,
         ]);
     }
 
-    public function usermanagement() {
+    public function usermanagement()
+    {
 
         $user = User::with(['payment'])->get();
 
-        return view('admin.user.user',[
+        return view('admin.user.user', [
             'penyewa' => $user->where('role', 0)
         ]);
     }
 
-    public function adminmanagement() {
+    public function adminmanagement()
+    {
         $user = User::with(['payment'])->get();
 
-        return view('admin.user.admin_management',[
+        return view('admin.user.admin_management', [
             'admin' => $user->where('role', 1),
             'user' => $user->where('role', 0)
         ]);
     }
 
-    public function newUser(Request $request) {
+    public function newUser(Request $request)
+    {
         $validated = $request->validate([
             'name' => 'required|max:255',
             'email' => 'required|email|unique:users',
@@ -61,12 +110,13 @@ class AdminController extends Controller
         return redirect(route('admin.user'));
     }
 
-    public function newOrderIndex($userId) {
+    public function newOrderIndex($userId)
+    {
         $user = User::find($userId);
         $product = Product::with(['category'])->get();
         $cart = Carts::with(['user'])->where('user_id', $userId)->get();
 
-        return view('admin.penyewaan.reservasibaru',[
+        return view('admin.penyewaan.reservasibaru', [
             'user' => $user,
             'product' => $product,
             'cart' => $cart,
@@ -74,24 +124,25 @@ class AdminController extends Controller
         ]);
     }
 
-    public function createNewOrder(Request $request, $userId) {
+    public function createNewOrder(Request $request, $userId)
+    {
         $cart = Carts::where('user_id', $userId)->get();
         $pembayaran = new Payment();
 
-        $pembayaran->no_invoice = $userId."/".Carbon::now()->timestamp;
+        $pembayaran->no_invoice = $userId . "/" . Carbon::now()->timestamp;
         $pembayaran->user_id = $userId;
         $pembayaran->status = 3;
         $pembayaran->total = $cart->sum('harga');
         $pembayaran->save();
 
-        foreach($cart as $c) {
+        foreach ($cart as $c) {
             Order::create([
                 'product_id' => $c->product_id,
                 'user_id' => $c->user_id,
-                'payment_id' => Payment::where('user_id',$userId)->orderBy('id','desc')->first()->id,
+                'payment_id' => Payment::where('user_id', $userId)->orderBy('id', 'desc')->first()->id,
                 'durasi' => $c->durasi,
-                'starts' => date('Y-m-d H:i', strtotime($request['start_date'].$request['start_time'])),
-                'ends' => date('Y-m-d H:i', strtotime($request['start_date'].$request['start_time']."+".$c->durasi." hours")),
+                'starts' => date('Y-m-d H:i', strtotime($request['start_date'] . $request['start_time'])),
+                'ends' => date('Y-m-d H:i', strtotime($request['start_date'] . $request['start_time'] . "+" . $c->durasi . " hours")),
                 'harga' => $c->harga,
                 'status' => 2
             ]);

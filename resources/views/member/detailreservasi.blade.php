@@ -23,7 +23,7 @@
                 @if ($paymentStatus == 3)
                     <div class="alert alert-success">Silakan melakukan pengambilan produk pada tanggal yang tertera</div>
                 @endif
-                <p><span id="countdown">05:00:00</span></p>
+                <p><span id="countdown">Limit Pembayaran 24:00:00</span></p>
                 <b>Tanggal Pengambilan :</b> {{ date('d M Y H:i', strtotime($detail->first()->starts)) }} <br>
                 <b>No. Invoice :</b> {{ $detail->first()->payment->no_invoice }}
                 <table class="table">
@@ -40,8 +40,8 @@
                             <tr class="{{ $item->status == 3 ? 'table-danger' : '' }}">
                                 <td>{{ $loop->iteration }}</td>
                                 <td>
-                                    <a class="link-dark"
-                                        href="{{ route('home.detail', ['id' => $item->product->id]) }}">{{ $item->product->nama_produk }}</a>
+                                    <a class="link-dark" href="{{ route('home.detail', ['id' => $item->product->id]) }}"
+                                        style="text-decoration: none;">{{ $item->product->nama_produk }}</a>
                                     <span class="badge bg-warning">{{ $item->product->category->nama_kategori }}</span>
                                     <span class="badge bg-secondary">{{ $item->durasi }} Hari</span>
                                     @if ($item->status === 3)
@@ -73,15 +73,14 @@
                 @if ($paymentStatus == 2)
                     <div class="alert {{ $detail->first()->payment->bukti == null ? 'alert-primary' : 'alert-success' }}">
                         @if ($detail->first()->payment->bukti == null)
-                            Reservasi anda telah disetujui, silakan bayar sesuai dengan total yang tertera dengan cara
+                            Silahkan bayar sesuai dengan total yang tertera dengan cara
                             transfer ke
-                            <h4><b>BNI xxxxxxxxxx</b></h4>
-                            <h6><b>a.n Dendra Kurnianto</b></h6>
+                            <h4><b>BNI 12345678</b></h4>
+                            <h6><b>a.n Erawati</b></h6>
                             lalu upload bukti bayar dengan menekan tombol dibawah.
                         @else
                             Bukti pembayaran telah di upload, silakan tunggu konfirmasi dari Admin
                         @endif
-                        <!-- Hanya aktifkan tombol jika status bukan "Ditolak" atau "Pembayaran Gagal" -->
                         @if ($paymentStatus != 3 && $paymentStatus != 5)
                             <form action="">
                                 <button type="button" class="btn btn-success mt-2" data-bs-toggle="modal"
@@ -92,7 +91,6 @@
                         @endif
                     </div>
                 @endif
-                <!-- Hanya tampilkan bukti pembayaran jika status tidak "Ditolak" -->
                 @if ($paymentStatus != 3 && $paymentStatus != 5)
                     @if ($paymentStatus == 3 || $paymentStatus == 4)
                         <h5>Bukti Pembayaran :</h5>
@@ -103,7 +101,6 @@
         </div>
     </div>
 
-    <!-- Modal -->
     <div class="modal fade" id="bayarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -118,7 +115,6 @@
                         <input type="file" name="bukti" class="form-control mb-2" required>
                         <button type="submit" class="btn btn-success">Upload</button>
                     </form>
-                    <!-- Hanya tampilkan bukti bayar jika status tidak "Ditolak" -->
                     @if ($paymentStatus != 3 && $paymentStatus != 5)
                         <h5 class="mt-2">Bukti Bayar</h5>
                         <img src="{{ url('') }}/images/evidence/{{ $bukti }}" alt="" width="500px">
@@ -126,92 +122,117 @@
                 </div>
             </div>
         </div>
-    @endsection
-   @push('custom-script')
-<script>
-    $(document).ready(function() {
-        let timer;
-        let countdown; // Timer value
+    </div>
+@endsection
 
-        // Pass the payment status and payment ID from PHP to JavaScript
-        let paymentStatus = {{ $paymentStatus }};
-        let paymentId = {{ $paymentId }};
+@push('custom-script')
+    <script>
+        $(document).ready(function() {
+            let timer;
+            let countdown; 
+            let paymentStatus = {{ $paymentStatus }};
+            let paymentId = {{ $paymentId }};
+            
+            function calculateRemainingTime() {
+                const savedTime = localStorage.getItem('countdownEndTime');
+                if (savedTime) {
+                    const currentTime = Math.floor(Date.now() / 1000);
+                    countdown = savedTime - currentTime;
 
-        // Calculate the remaining time
-        function calculateRemainingTime() {
-            const savedTime = localStorage.getItem('countdownEndTime');
-            if (savedTime) {
-                const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
-                countdown = savedTime - currentTime;
-
-                if (countdown <= 0) {
-                    countdown = 0;
-                    sendPostRequest(); // Trigger POST request if time is up
+                    if (countdown <= 0) {
+                        countdown = 0;
+                        sendPostRequest(); 
+                    }
+                } else {
+                    countdown = 24 * 60 * 60; // 24 jam dalam detik
+                    localStorage.setItem('countdownEndTime', Math.floor(Date.now() / 1000) + countdown);
                 }
-            } else {
-                countdown = 5 * 60 * 60; // 5 hours in seconds
-                localStorage.setItem('countdownEndTime', Math.floor(Date.now() / 1000) + countdown);
-            }
-        }
-
-        function startCountdown() {
-            // If payment status is 1, 3, or 4, stop the countdown
-            if (paymentStatus == 1 || paymentStatus == 3 || paymentStatus == 4) {
-                $('#countdown').text('00:00:00');
-                return; // Stop the countdown
             }
 
-            calculateRemainingTime(); // Initialize countdown based on saved time
-
-            timer = setInterval(function() {
-                countdown--;
-                $('#countdown').text(formatTime(countdown));
-                localStorage.setItem('countdownEndTime', Math.floor(Date.now() / 1000) + countdown); // Update end time in localStorage
-
-                if (countdown <= 0) {
-                    clearInterval(timer);
-                    localStorage.removeItem('countdownEndTime'); // Clear localStorage
-                    sendPostRequest(); // Send a POST request
+            function startCountdown() {
+                if (paymentStatus != 2) {
+                    $('#countdown').text('00:00:00');
+                    return;
                 }
-            }, 1000);
-        }
 
-        function formatTime(seconds) {
-            let hours = Math.floor(seconds / 3600);
-            let minutes = Math.floor((seconds % 3600) / 60);
-            let secs = seconds % 60;
+                calculateRemainingTime();
 
-            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }
+                timer = setInterval(function() {
+                    countdown--;
+                    $('#countdown').text(formatTime(countdown));
+                    localStorage.setItem('countdownEndTime', Math.floor(Date.now() / 1000) + countdown);
 
-        function sendPostRequest() {
-            const url = '/reservasi/ditolakbayar'; // Your POST URL
-            const data = {
-                id: paymentId
-            }; // Echo the PHP variable into JavaScript
+                    if (countdown <= 0) {
+                        clearInterval(timer);
+                        localStorage.removeItem('countdownEndTime');
+                        sendPostRequest();
+                    }
 
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: JSON.stringify(data),
-                contentType: 'application/json',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Include CSRF token for Laravel
-                },
-                success: function(response) {
-                    console.log('Success:', response);
-                    localStorage.removeItem('countdownEndTime'); // Clear localStorage
-                    window.location.href = '/reservasi'; // Redirect after successful POST
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                    alert('Terjadi kesalahan saat mengirim data.');
-                }
+                    if (paymentStatus == 3 || paymentStatus == 5) {
+                        clearInterval(timer);
+                        localStorage.removeItem('countdownEndTime');
+                        $('#countdown').text('00:00:00');
+                    }
+                }, 1000);
+            }
+
+            function formatTime(seconds) {
+                let hours = Math.floor(seconds / 3600);
+                let minutes = Math.floor((seconds % 3600) / 60);
+                let secs = seconds % 60;
+
+                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+
+            function sendPostRequest() {
+                const url = '/reservasi/ditolakbayar'; 
+                const data = {
+                    id: paymentId
+                };
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        console.log('Success:', response);
+                        localStorage.removeItem('countdownEndTime');
+                        window.location.href = '/reservasi';
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
+
+            function checkPaymentStatus() {
+                $.ajax({
+                    url: `/reservasi/check-payment-status/${paymentId}`, // Endpoint baru untuk cek status pembayaran
+                    type: 'GET',
+                    success: function(response) {
+                        paymentStatus = response.paymentStatus;
+                        if (paymentStatus == 3 || paymentStatus == 5) {
+                            clearInterval(timer);
+                            localStorage.removeItem('countdownEndTime');
+                            $('#countdown').text('00:00:00');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error checking payment status:', error);
+                    }
+                });
+            }
+
+            $('#bayarModal').on('hidden.bs.modal', function () {
+                checkPaymentStatus(); // Cek status pembayaran setelah modal upload bukti ditutup
             });
-        }
 
-        startCountdown(); // Start the countdown
-    });
-</script>
+            startCountdown();
+        });
+    </script>
 @endpush
 

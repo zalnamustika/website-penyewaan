@@ -14,11 +14,11 @@ class MemberController extends Controller
     public function index()
     {
         $product = Product::with(['category'])->get();
-        $carts = Carts::where('user_id', '=', Auth::id());
+        $carts = Carts::query();
 
         if (request('search')) {
             $key = request('search');
-            $product =  Product::with(['category'])->where('nama_produk', 'LIKE', '%' . $key . '%')->get();
+            $product = Product::with(['category'])->where('nama_produk', 'LIKE', '%' . $key . '%')->get();
         }
 
         if (request('kategori')) {
@@ -31,5 +31,18 @@ class MemberController extends Controller
             'total' => $carts->sum('harga'),
             'kategori' => Category::all()
         ]);
+    }
+
+
+    public function keranjang()
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $cartItems = Carts::where('user_id', Auth::id())->get();
+        $total = $cartItems->sum('harga');
+
+        return view('member.keranjang', compact('cartItems', 'total'));
     }
 }

@@ -67,7 +67,8 @@
                         @foreach ($riwayat as $r)
                             <tr>
                                 <td>{{ date('D, d M Y H:i', strtotime($r->order->first()->starts)) }}</td>
-                                <td>{{ formatRupiah($r->total) }} &nbsp; <span class="badge bg-secondary">{{ $r->order->count() }}
+                                <td>{{ formatRupiah($r->total) }} &nbsp; <span
+                                        class="badge bg-secondary">{{ $r->order->count() }}
                                         Produk</span>
                                     <span class="badge bg-secondary">Selesai</span>
                                 </td>

@@ -1,46 +1,96 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
+
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Reservasi dan Pemasukan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h4 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .total-row {
+            font-weight: bold;
+        }
+
+        .total-border-top {
+            border-top: 2px solid #000;
+        }
+    </style>
 </head>
+
 <body>
-    <div class="container mt-4">
-        <div class="row mb-4">
-            <h4>Laporan Reservasi dan Pemasukan</h4>
-            <small>from <b>{{ date('D, d M Y', strtotime(request('dari'))) }}</b> to <b>{{ date('D, d M Y', strtotime(request('sampai'))) }}</b></small>
-        </div>
-        <div class="row">
-            <table class="table">
-                <thead>
+    <h4>Laporan Reservasi dan Pemasukan</h4><h4>Rumah Penyewaan Pakaian</h4><br>
+    <p><strong>Tanggal :</strong> {{ $dariFormatted }}<strong> s/d</strong> {{ $sampaiFormatted }}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Invoice - Nama Penyewa</th>
+                <th>Produk</th>
+                <th class="text-right">Harga</th>
+            </tr>
+        </thead>
+        <tbody>
+            @php $totalKeseluruhan = 0; @endphp
+            @foreach ($laporan as $invoiceWithUser => $orders)
+                @php
+                    // Mengambil nama penyewa dari string invoiceWithUser
+                    $parts = explode(' - ', $invoiceWithUser);
+                    $invoice = $parts[0];
+                    $userName = $parts[1];
+                @endphp
+                <tr>
+                    <td rowspan="{{ $orders->count() }}">{{ $loop->iteration }}</td>
+                    <td rowspan="{{ $orders->count() }}">{{ $invoice }} - {{ $userName }}</td>
+                    <td>{{ $orders->first()->product->nama_produk }}</td>
+                    <td class="text-right">{{ formatRupiah($orders->first()->harga) }}</td>
+                </tr>
+                @foreach ($orders->slice(1) as $order)
                     <tr>
-                        <th>No.</th>
-                        <th>Tanggal Reservasi</th>
-                        <th>Produk</th>
-                        <th>Penyewa</th>
-                        <th>Harga</th>
+                        <td>{{ $order->product->nama_produk }}</td>
+                        <td class="text-right">{{ formatRupiah($order->harga) }}</td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach ($laporan as $item)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ date('D, d M Y', strtotime($item->tanggal)) }}</td>
-                        <td>{{ $item->product->nama_produk }}</td>
-                        <td>{{ $item->user->name }}</td>
-                        <td><b>{{ formatRupiah($item->harga) }}</b></td>
-                    </tr>
-                    @endforeach
-                    <tr>
-                        <td colspan="3"></td>
-                        <td><b>Total</b></td>
-                        <td ><b>{{ formatRupiah($total) }}</b></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <script>
-        window.print()
-    </script>
+                @endforeach
+                @php $totalKeseluruhan += $orders->sum('harga'); @endphp
+            @endforeach
+            <tr class="total-row">
+                <td colspan="3" class="text-right"><b>Total</b></td>
+                <td class="text-right"><b>{{ formatRupiah($totalKeseluruhan) }}</b></td>
+            </tr>
+        </tbody>
+    </table>
 </body>
+
 </html>

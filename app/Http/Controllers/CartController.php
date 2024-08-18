@@ -3,15 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Carts;
-use App\Models\Payment;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+
 
 class CartController extends Controller
 {
     public function store(Request $request, $id, $userId)
     {
+        // Tentukan apakah user terautentikasi atau tidak
+        $userId = $userId !== 'guest' ? $userId : null;
+
         // Find the item
         $product = Product::find($id);
 
@@ -38,7 +40,7 @@ class CartController extends Controller
         // Check if the item with the same harga_id is already in the cart
         $cart = Carts::where('product_id', $product->id)
             ->where('user_id', $userId)
-            ->where('harga_id', $hargaId) // Check for the same harga_id
+            ->where('harga_id', $hargaId)
             ->first();
 
         if ($cart) {
@@ -66,6 +68,9 @@ class CartController extends Controller
         return back()->with('success', 'Berhasil ditambahkan ke keranjang');
     }
 
+
+
+
     public function clearCartAfterTimeout(Request $request)
     {
         $cartItemId = $request->input('id');
@@ -79,7 +84,7 @@ class CartController extends Controller
 
             // Hapus item keranjang
             $cartItem->delete();
-            
+
             return response()->json(['success' => 'Cart item removed and stock updated.']);
         }
 
@@ -90,22 +95,21 @@ class CartController extends Controller
     {
         // Find the cart item
         $cartItem = Carts::find($id);
-    
+
         if ($cartItem) {
             // Find the associated product
             $product = Product::find($cartItem->product_id);
-    
+
             if ($product) {
                 // Restore the product stock
                 $product->stok += $cartItem->jumlah;
                 $product->save();
             }
-    
+
             // Delete the cart item
             $cartItem->delete();
         }
-    
+
         return back()->with('success', 'Item berhasil dihapus dari keranjang dan stok dikembalikan');
     }
-    
 }
