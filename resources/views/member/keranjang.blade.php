@@ -43,7 +43,8 @@
                         @csrf
                         <b><small>Tanggal Pengambilan</small></b>
                         <input type="date" name="start_date" class="form-control mb-2" required>
-                        <b><small>Jam Pengambilan</small></b>
+                        <b><small>Jam Pengambilan</small></b><br>
+                        <small style="color: grey">silahkan pilih dalam jam operasional 07.00 - 22.00 WIB</small>
                         <input type="time" name="start_time" class="form-control mb-3" required>
                         <button type="submit" style="width:100%" class="btn btn-success"
                             {{ Auth::user()->cart->count() == 0 ? 'disabled' : '' }}>Checkout</button>

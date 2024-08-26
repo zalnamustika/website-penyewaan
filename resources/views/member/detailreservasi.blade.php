@@ -23,7 +23,7 @@
                 @if ($paymentStatus == 3)
                     <div class="alert alert-success">Silakan melakukan pengambilan produk pada tanggal yang tertera</div>
                 @endif
-                <p><span id="countdown">Limit Pembayaran 24:00:00</span></p>
+                <p><span id="countdown">Limit Pembayaran 24:00:00 (silahkan hubungi admin lebih lanjut)</span></p>
                 <b>Tanggal Pengambilan :</b> {{ date('d M Y H:i', strtotime($detail->first()->starts)) }} <br>
                 <b>No. Invoice :</b> {{ $detail->first()->payment->no_invoice }}
                 <table class="table">
@@ -75,11 +75,11 @@
                         @if ($detail->first()->payment->bukti == null)
                             Silahkan bayar sesuai dengan total yang tertera dengan cara
                             transfer ke
-                            <h4><b>BNI 12345678</b></h4>
-                            <h6><b>a.n Erawati</b></h6>
+                            <h4><b>BRI 0058 0102 8552 539</b></h4>
+                            <h6><b>a/n Siti Aisyah Yus</b></h6>
                             lalu upload bukti bayar dengan menekan tombol dibawah.
                         @else
-                            Bukti pembayaran telah di upload, silakan tunggu konfirmasi dari Admin
+                            Bukti pembayaran telah di upload, silakan tunggu konfirmasi dari Admin 1x24 Jam
                         @endif
                         @if ($paymentStatus != 3 && $paymentStatus != 5)
                             <form action="">
@@ -117,22 +117,23 @@
                     </form>
                     @if ($paymentStatus != 3 && $paymentStatus != 5)
                         <h5 class="mt-2">Bukti Bayar</h5>
-                        <img src="{{ url('') }}/images/evidence/{{ $bukti }}" alt="" width="500px">
+                        <img src="{{ url('') }}/images/evidence/{{ $bukti }}" alt=""
+                            class="img-fluid" style="max-width: 100%;height: auto;">
                     @endif
                 </div>
             </div>
         </div>
     </div>
-@endsection
 
+@endsection
 @push('custom-script')
     <script>
         $(document).ready(function() {
             let timer;
-            let countdown; 
+            let countdown;
             let paymentStatus = {{ $paymentStatus }};
             let paymentId = {{ $paymentId }};
-            
+
             function calculateRemainingTime() {
                 const savedTime = localStorage.getItem('countdownEndTime');
                 if (savedTime) {
@@ -141,7 +142,7 @@
 
                     if (countdown <= 0) {
                         countdown = 0;
-                        sendPostRequest(); 
+                        sendPostRequest();
                     }
                 } else {
                     countdown = 24 * 60 * 60; // 24 jam dalam detik
@@ -185,7 +186,7 @@
             }
 
             function sendPostRequest() {
-                const url = '/reservasi/ditolakbayar'; 
+                const url = '/reservasi/ditolakbayar';
                 const data = {
                     id: paymentId
                 };
@@ -227,7 +228,7 @@
                 });
             }
 
-            $('#bayarModal').on('hidden.bs.modal', function () {
+            $('#bayarModal').on('hidden.bs.modal', function() {
                 checkPaymentStatus(); // Cek status pembayaran setelah modal upload bukti ditutup
             });
 
@@ -235,4 +236,3 @@
         });
     </script>
 @endpush
-

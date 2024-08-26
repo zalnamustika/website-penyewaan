@@ -27,13 +27,19 @@ class AdminController extends Controller
             ->limit(10)
             ->get();
 
-        // Ambil data order yang terlambat dikembalikan dengan pagination
-        $lateOrders = Order::with(['product', 'user', 'payment'])
-            ->where('status', 2)
+        $late = Order::with(['product', 'user', 'payment'])
+            ->where('status', 2) // Asumsi status 2 berarti produk dipinjam
             ->where('ends', '<', Carbon::now())
-            ->get();
+            ->get()
+            ->map(function ($order) {
+                // Menghitung jumlah hari keterlambatan
+                $now = Carbon::now();
+                $ends = Carbon::parse($order->ends);
+                $order->daysLate = $now->diffInDays($ends);
+                return $order;
+            });
 
-        // Ambil data order yang belum diacc oleh admin dengan pagination
+        // Ambil data order yang belum diacc oleh admin 
         $belumAcc = Order::with(['product', 'user'])
             ->where('status', 1)
             ->where('status', '!=', 5)
@@ -47,11 +53,11 @@ class AdminController extends Controller
 
                 // Tentukan kelas warna berdasarkan keterlambatan
                 if ($order->daysLate == 1) {
-                    $order->colorClass = 'table-danger'; // Hijau untuk keterlambatan 1 hari
+                    $order->colorClass = 'table-success'; // Hijau untuk keterlambatan 1 hari
                 } elseif ($order->daysLate >= 2 && $order->daysLate <= 3) {
                     $order->colorClass = 'table-warning'; // Kuning untuk keterlambatan 2-3 hari
                 } else {
-                    $order->colorClass = 'table-success'; // Merah untuk keterlambatan lebih dari 3 hari
+                    $order->colorClass = 'table-danger'; // Merah untuk keterlambatan lebih dari 3 hari
                 }
 
                 return $order;
@@ -69,7 +75,7 @@ class AdminController extends Controller
             'total_penyewaan' => Payment::count(),
             'top_user' => $topUser,
             'top_products' => $topProducts,
-            'orders' => $lateOrders,
+            'orders' => $late,
             'belumAcc' => $belumAcc,
             'belumBayar' => $belumBayar,
         ]);

@@ -182,7 +182,7 @@
                 <div class="col-lg-6 col-sm-12">
                     <div class="card shadow">
                         <div class="card-body">
-                            <h5 class="card-title">Sewa Terlambat</h5>
+                            <h5 class="card-title">Sewa Terlambat ({{ $orders->count() }} Order)</h5>
                             <div id="searchContainer">
                                 <input type="text" id="searchInput1" placeholder="Cari...">
                                 <select id="rowsPerPage1">
@@ -206,31 +206,25 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($orders as $order)
-                                            @if ($order->status != 5)
-                                                <tr>
-                                                    <td>{{ $order->product->nama_produk }}</td>
-                                                    <td>{{ $order->user->name }} ({{ $order->user->telepon }})</td>
-                                                    <td>{{ date('D, d M Y H:i', strtotime($order->starts)) }}</td>
-                                                    <td>{{ date('D, d M Y H:i', strtotime($order->ends)) }}</td>
-                                                    <td>
-                                                        @php
-                                                            $now = \Carbon\Carbon::now();
-                                                            $ends = \Carbon\Carbon::parse($order->ends);
-                                                            $daysLate = $now->diffInDays($ends);
-                                                        @endphp
-                                                        <a href="https://api.whatsapp.com/send?phone=+62{{ $order->user->telepon }}&text=Hai {{ $order->user->name }},%0A%0AKami ingin mengingatkan bahwa produk *{{ $order->product->nama_produk }}* yang Anda sewa telah melewati batas waktu pengembalian. Anda telah terlambat selama {{ $daysLate }} hari. Mohon segera melakukan pengembalian. Tanggal pengembalian: {{ $order->ends }}, sekarang sudah tanggal: {{ $now }}."
-                                                            target="_blank" class="btn btn-sm btn-success">
-                                                            <i class="fab fa-whatsapp"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            @endif
+                                            <tr>
+                                                <td>{{ $order->product->nama_produk }}</td>
+                                                <td>{{ $order->user->name }} ({{ $order->user->telepon }})</td>
+                                                <td>{{ date('D, d M Y H:i', strtotime($order->starts)) }}</td>
+                                                <td>{{ date('D, d M Y H:i', strtotime($order->ends)) }}</td>
+                                                <td>
+                                                    <a href="https://api.whatsapp.com/send?phone=+62{{ $order->user->telepon }}&text=Hai {{ $order->user->name }},%0A%0AKami ingin mengingatkan bahwa produk *{{ $order->product->nama_produk }}* yang Anda sewa telah melewati batas waktu pengembalian. Anda telah terlambat selama {{ $order->daysLate }} hari. Mohon segera melakukan pengembalian. Tanggal pengembalian: {{ $order->ends }}, sekarang sudah tanggal: {{ now() }}."
+                                                        target="_blank" class="btn btn-sm btn-success">
+                                                        <i class="fab fa-whatsapp"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
+                    
                     <div class="card shadow">
                         <div class="card-body">
                             <h5 class="card-title">Reservasi Belum Diacc</h5>

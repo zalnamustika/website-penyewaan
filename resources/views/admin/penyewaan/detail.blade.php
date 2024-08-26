@@ -77,6 +77,7 @@
                                             </td>
                                             <td>
                                                 <a class="link-dark" href="{{ route('home.detail', ['id' => $item->product->id]) }}" class="link">{{ $item->product->produk }}</a>
+                                                <span>{{ $item->product->nama_produk }}</span>
                                                 <span class="badge bg-warning">{{ $item->product->category->nama_kategori }}</span>
                                                 <span class="badge bg-secondary">{{ $item->durasi }} Hari</span>
                                                 @if ($item->status === 3)

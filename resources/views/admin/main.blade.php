@@ -64,6 +64,11 @@
                             <div class="sb-nav-link-icon"><i class="fas fa-scroll"></i></div>
                             Reservasi
                         </a>
+                        <a class="nav-link {{ Route::is('denda.index') ? 'active' : '' }}"
+                            href="{{ route('denda.index') }}">
+                            <div class="sb-nav-link-icon"><i class="fas fa-scroll"></i></div>
+                            Denda
+                        </a>
                         <a class="nav-link {{ Route::is('riwayat-reservasi') ? 'active' : '' }}"
                             href="{{ route('riwayat-reservasi') }}">
                             <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
@@ -144,6 +149,7 @@
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
     <script src="/js/datatables.js"></script>
     @stack('scripts')
+    @stack('custom-script')
 </body>
 
 </html>

@@ -50,6 +50,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     //Penyewaan
     Route::get('/admin/penyewaan', [RentController::class, 'index'])->name('penyewaan.index');
+    Route::get('/admin/denda/{id}', [RentController::class, 'denda'])->name('denda.index');
     Route::get('/admin/penyewaan/detail/{id}', [RentController::class, 'detail'])->name('penyewaan.detail');
     Route::get('/admin/riwayat-reservasi', [RentController::class, 'riwayat'])->name('riwayat-reservasi');
     Route::patch('/acc/{paymentId}', [OrderController::class, 'acc'])->name('acc');

@@ -270,39 +270,8 @@ class OrderController extends Controller
         return redirect()->back()->with('error', 'Order tidak ditemukan');
     }
 
-
-
-
     public function produkkembali($id)
     {
-        // // Ambil semua ID yang dikirim melalui request (asumsikan dalam bentuk array)
-        // $ids = $request->input('id');
-
-        // // Loop melalui setiap ID untuk mengubah statusnya
-        // foreach ($ids as $id) {
-        //     // Temukan entri Order berdasarkan ID
-        //     $order = Order::where('id', $id)->first();
-
-        //     if ($order) {
-        //         // Update status order menjadi 'Sudah Kembali'
-        //         $order->update(['status_pengembalian' => 'sudah_kembali']);
-
-        //         // Cek apakah semua produk dalam pesanan ini sudah dikembalikan
-        //         $allReturned = Order::where('payment_id', $order->payment_id)
-        //             ->where('status_pengembalian', '!=', 'sudah_kembali')
-        //             ->doesntExist();
-
-        //         if ($allReturned) {
-        //             // Jika semua produk sudah dikembalikan, update status pembayaran menjadi 'Selesai'
-        //             $payment = Payment::find($order->payment_id);
-        //             $payment->update(['status' => 4]);
-        //         }
-        //     }
-        // }
-
-
-        // return response()->json(['success' => true]);
-
         Payment::find($id)->update([
             'status' => 4
         ]);
@@ -345,10 +314,10 @@ class OrderController extends Controller
 
         // Mendapatkan laporan dengan grouping by no_invoice dan menyertakan nama penyewa
         $laporan = Order::with(['payment', 'product', 'user'])
-            ->whereBetween('created_at', [$dari, $sampai])
-            ->where('status', 4)
+            ->whereBetween('ends', [$dari, $sampai])
+            ->where('status', 2) // atau sesuai status yang mewakili selesai
             ->whereHas('payment', function ($query) {
-                $query->where('status', '=', 4);
+                $query->where('status', '=', 4); // atau sesuai status pembayaran selesai
             })
             ->get()
             ->groupBy(function ($order) {
@@ -358,6 +327,8 @@ class OrderController extends Controller
         $total = $laporan->sum(function ($orders) {
             return $orders->sum('harga');
         });
+
+        // dd($laporan->toArray());
 
         // Mengubah format tanggal "dari" dan "sampai" ke dalam bahasa Indonesia untuk ditampilkan di PDF
         $dariFormatted = $dari->translatedFormat('l, j F Y');

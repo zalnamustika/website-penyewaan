@@ -49,7 +49,6 @@
         }
     </style>
 </head>
-
 <body>
     <h4>Laporan Reservasi dan Pemasukan</h4><h4>Rumah Penyewaan Pakaian</h4><br>
     <p><strong>Tanggal :</strong> {{ $dariFormatted }}<strong> s/d</strong> {{ $sampaiFormatted }}</p>
